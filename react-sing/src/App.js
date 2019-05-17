@@ -44,41 +44,40 @@ class App extends React.Component {
       return commentArea.innerHTML += '<p>' + messageData.handle + ':' + messageData.message + '</p>'
     })
    
-    io.on('audioBuffer', (arrayBuffer) => {
-      if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
-    })
+  //   io.on('audioBuffer', (arrayBuffer) => {
+  //     if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
+  //   })
 
-    io.on('abort', () =>{
-      sourceOpen()
-    })
+  //   io.on('abort', () =>{
+  //     sourceOpen()
+  //   })
 
 
-    function sourceOpen(){ 
-      audioElement = document.createElement('audio');
-      mediaSource = new MediaSource();
-      audioElement.src = URL.createObjectURL(mediaSource);
-      audioElement.autoplay = true
-      mediaSource.addEventListener('sourceopen', e => {
-        var mime = "audio/webm;codecs=opus";
-        var mediaSource = e.target;
-        sourceBuffer = mediaSource.addSourceBuffer(mime);        
-      });
-    }
-    sourceOpen()
-  }
+  //   function sourceOpen(){ 
+  //     audioElement = document.createElement('audio');
+  //     mediaSource = new MediaSource();
+  //     audioElement.src = URL.createObjectURL(mediaSource);
+  //     audioElement.autoplay = true
+  //     mediaSource.addEventListener('sourceopen', e => {
+  //       var mime = "audio/webm;codecs=opus";
+  //       var mediaSource = e.target;
+  //       sourceBuffer = mediaSource.addSourceBuffer(mime);        
+  //     });
+  //   }
+  //   sourceOpen()
+  // }
 
-  abort = () =>{
-   io.emit('abort')
-  }
+  // abort = () =>{
+  //  io.emit('abort')
+  // }
 
-  sendAudioBuffer = bufferData => {
-    //convert buffer data
-    //console.log(bufferData)
-    io.emit('audioBuffer', bufferData)
-  }
+  // sendAudioBuffer = bufferData => {
+  //   
+  //   io.emit('audioBuffer', bufferData)
+  // }
   // {
   //   bufferData: bufferData
-  // }
+   }
   render() {
     return (
       <div>

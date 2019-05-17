@@ -32,7 +32,8 @@ export default class Recorder extends React.Component {
         //   .then(res => res.arrayBuffer())
         //   .then(bufferData => {
           console.log(recordedBlob)
-              this.props.sendAudioBuffer(recordedBlob)
+               // real-time 
+              //this.props.sendAudioBuffer(recordedBlob)
           // }
           ///*console.log(bufferData)*/)
       }

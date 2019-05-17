@@ -36,16 +36,16 @@ io.on('connection', socket =>{
       console.log(messageData)
     })
 
-    socket.on('audioBuffer', audioBuffer => {
-       socket.broadcast.emit('audioBuffer', audioBuffer)
-       //io.sockets
-       console.log(audioBuffer) 
-    })
-   socket.on('abort',()=>{
-       socket.broadcast.emit('abort')
-   })
-    //listen to audioBuffer
-
+//     // real-time audio sending
+//     socket.on('audioBuffer', audioBuffer => {
+//        socket.broadcast.emit('audioBuffer', audioBuffer)
+//        //io.sockets
+//        console.log(audioBuffer) 
+//     })
+//    socket.on('abort',()=>{
+//        socket.broadcast.emit('abort')
+//    })
+   
 })
 
 
