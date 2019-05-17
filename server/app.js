@@ -25,7 +25,7 @@ app.get('/users', (req, res) =>{
    
     }).then(users => res.json(users))
 })
-
+ 
 //setup socket
 const io = socketIO(server)
 io.on('connection', socket =>{

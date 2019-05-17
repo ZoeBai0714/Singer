@@ -1,8 +1,8 @@
 import React from 'react';
 import { ReactMic } from 'react-mic';
 import socketIO from 'socket.io-client';
-//const io = socketIO('localhost:3000/')
-const io = socketIO('http://10.185.5.84:3000/')
+const io = socketIO('localhost:3000/')
+// const io = socketIO('http://10.185.5.84:3000/')
 
 // import AudioContext from './AudioContext';
 // import AudioPlay from './AudioPlay'

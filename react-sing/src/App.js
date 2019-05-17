@@ -4,8 +4,8 @@ import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
-//const io = socketIO('localhost:3000/')
-const io = socketIO('http://10.185.5.84:3000/')
+const io = socketIO('localhost:3000/')
+// const io = socketIO('http://10.185.5.84:3000/')
 
 class App extends React.Component {
   state = {
@@ -38,12 +38,11 @@ class App extends React.Component {
 
 
   componentDidMount() {
-    var sourceBuffer, audioElement, mediaSource
+    //var sourceBuffer, audioElement, mediaSource
     io.on('comment', messageData => {
       const commentArea = document.getElementById('output')
       return commentArea.innerHTML += '<p>' + messageData.handle + ':' + messageData.message + '</p>'
     })
-   
   //   io.on('audioBuffer', (arrayBuffer) => {
   //     if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
   //   })
