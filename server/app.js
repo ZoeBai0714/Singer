@@ -12,15 +12,19 @@ server.listen(port, () => console.log(`Listening on port ${port}`));
 //import models
 const User = require('./models').User;
 const RecordedSong = require('./models').RecordedSong
-
+const Comment = require('./models').Comment
 app.get('/users', (req, res) =>{
     User.findAll({
         //include associated model 
-       include:[RecordedSong]
+       include:[{
+                model: RecordedSong
+            },
+            {
+                model:Comment
+            }]
+   
     }).then(users => res.json(users))
 })
-
-
 
 //setup socket
 const io = socketIO(server)
@@ -31,7 +35,19 @@ io.on('connection', socket =>{
       io.sockets.emit('comment', messageData)
       console.log(messageData)
     })
+
+    socket.on('audioBuffer', audioBuffer => {
+       socket.broadcast.emit('audioBuffer', audioBuffer)
+       //io.sockets
+       console.log(audioBuffer) 
+    })
+   socket.on('abort',()=>{
+       socket.broadcast.emit('abort')
+   })
+    //listen to audioBuffer
+
 })
+
 
 
     // seed data
