@@ -14,6 +14,9 @@ module.exports = {
       likes: {
         type: Sequelize.INTEGER
       },
+      blobURL:{
+        type:Sequelize.STRING
+      },
       //association
       userId:{
         type: Sequelize.INTEGER

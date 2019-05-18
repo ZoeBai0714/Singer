@@ -4,8 +4,10 @@ const cors = require('cors');
 const server = http.createServer(app); 
 const port = 3000;
 const faker = require("faker");
+const bodyParser = require('body-parser')
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const socketIO = require("socket.io");
-
+app.use(bodyParser.json())
 app.use(cors());
 server.listen(port, () => console.log(`Listening on port ${port}`));
   
@@ -13,6 +15,8 @@ server.listen(port, () => console.log(`Listening on port ${port}`));
 const User = require('./models').User;
 const RecordedSong = require('./models').RecordedSong
 const Comment = require('./models').Comment
+
+//Routes for data
 app.get('/users', (req, res) =>{
     User.findAll({
         //include associated model 
@@ -26,6 +30,44 @@ app.get('/users', (req, res) =>{
     }).then(users => res.json(users))
 })
  
+app.get('/users/:id', (req, res) =>{
+  User.findByPk(req.params.id)
+  .then(user => res.json(user))
+})
+
+// Each user's recordings
+app.get('/users/:id/recorded-songs', (req, res) =>{
+        User.findByPk(req.params.id)
+        .then(user => {user.getRecordedSongs()
+        .then(userSongs => res.json(userSongs))
+        })
+})
+
+app.get('/recorded-songs', (req, res) =>{
+    console.log("watup")
+    RecordedSong.findAll({ include:[{model: User}]})
+    .then(songs => res.json(songs))
+})
+
+
+app.post('/recorded-songs', urlencodedParser, async (req, res) => {
+    // get info from frontend fetch and create the recordedsong and association in db
+    // let user = await User.findByPk(1)
+    // let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
+    // song.setUser(user.id)
+})
+
+ User.findByPk(1)
+ .then(user => {
+     user.getRecordedSongs()
+     .then(songs => console.log(songs[1].dataValues.blobURL))}) 
+ 
+
+app.get('/recorded-songs/:id', (req, res)=>{
+    RecordedSong.findByPk(req.params.id)
+    .then(song => res.json(song))
+})
+
 //setup socket
 const io = socketIO(server)
 io.on('connection', socket =>{

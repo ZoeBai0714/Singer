@@ -4,6 +4,7 @@ import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
+import MySongs from './Component/MySongs';
 const io = socketIO('localhost:3000/')
 // const io = socketIO('http://10.185.5.84:3000/')
 
@@ -84,6 +85,7 @@ class App extends React.Component {
         <SongList songIds={this.state.songIds} />
         <Recorder sendAudioBuffer={this.sendAudioBuffer} />
         <Comment reaction={this.reaction} handle={this.state.handle} comment={this.state.comment}  /*displayComments = {this.displayComments}*/ />
+        <MySongs/>
       </div>
 
     )

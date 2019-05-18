@@ -47,5 +47,30 @@
    include:[RecordedSong]
 }).then(users => console.log(users[0].RecordedSongs)) 
 
+10. Node js backend talk to frontend data through fetch request
+   the frontend fetch request(post) we send will be caught by backend post method
+   
+   FRONTEND:
+   fetch(`${serverURL}/recorded-songs`, {
+          method: "POST",
+          headers:{
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            name:"test",
+            likes: 0,
+            blobURL: this.state.blobURL
+          })
+        }) 
+
+    BACKEND:    
+    app.post('/recorded-songs', urlencodedParser, (req, res) => {
+    //res.send('you reached me')
+    console.log(req)
+    // continue here
+}) 
+
+important : make sure we install body-parser, and have this line of code: app.use(bodyParser.json())
 
 */
