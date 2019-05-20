@@ -3,21 +3,23 @@ import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 const serverURL = 'http://localhost:3000'
-const io = socketIO('localhost:3000/')
-// const io = socketIO('http://10.185.5.84:3000/')
+//const io = socketIO('localhost:3000/')
+const io = socketIO('http://10.185.6.102:3000/')
 
 const mapStateToProps = state =>{
   return  { 
            record: state.record,
            blobURL:state.blobURL,
-           blobString: state.blobString
+           blobString: state.blobString,
+           blobObj: state.blobObj
           }
 }
 
 const mapDispatchToProps = {
     changeRecordStatus: (status) => ({type: 'CHANGE_RECORD_STATUS', record:status}),
     saveBlobURL: (blobURL) =>({type: 'BLOBURL', blobURL:blobURL}),
-    saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}) 
+    saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}),
+    saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
@@ -40,7 +42,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         //   .then(bufferData => {
           //console.log(recordedBlob)
                // real-time 
-              //this.props.sendAudioBuffer(recordedBlob)
+            this.props.sendAudioBuffer(recordedBlob)
           // }
           ///*console.log(bufferData)*/)
       }
@@ -48,6 +50,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       onStop = (recordedBlob)=> {
         this.props.changeRecordStatus(false)
         this.props.saveBlobURL(recordedBlob.blobURL)
+        //this.props.saveBlobObj(recordedBlob.blob)// recordedBlob
         //this.props.abort(recordedBlob)
 
         const reader = new FileReader() 
@@ -62,33 +65,29 @@ export default connect(mapStateToProps, mapDispatchToProps)(
          data = data.split('base64,')[1]
          this.props.saveBlobString(data)
         }
+        console.log(recordedBlob.blob)
         console.log('recordedBlob is: ', recordedBlob.blobURL);
       }
 
 
      onSave = e =>{
        e.preventDefault();
-
-      //  const formData = {}
-      //  formData['name'] = e.target.children[3].value
-
-      //  const formData = new FormData()
-      //  formData.append('name', e.target.children[3].value)
-      //  formData.append('blob', blobThingy)
-        // save this into database by fetch post method
-        fetch(`${serverURL}/recorded-songs`, {
-          method: "POST",
-          headers:{
-            "Content-Type": "application/json",
-            Accept: "application/json"
-          },
-          body: JSON.stringify({
-            name: e.target.children[3].value,
-            likes: 0,
-            blobURL: this.props.blobString
+       
+          // save this into database by fetch post method
+          fetch(`${serverURL}/recorded-songs`, {
+            method: "POST",
+            headers:{
+              "Access-Control-Allow-Origin":"*",
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify({
+              name: e.target.children[3].value,
+              likes: 0,
+              blobURL: this.props.blobString
+            })
+          
           })
-        
-        })
      }      
       
     
@@ -121,6 +120,3 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 }
 )
 
-/*
-
-*/

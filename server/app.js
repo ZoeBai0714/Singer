@@ -7,7 +7,7 @@ const faker = require("faker");
 const bodyParser = require('body-parser')
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const socketIO = require("socket.io");
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
 app.use(cors());
 server.listen(port, () => console.log(`Listening on port ${port}`));
   
@@ -51,8 +51,8 @@ app.get('/recorded-songs', (req, res) =>{
  
 
 app.post('/recorded-songs', urlencodedParser, async (req, res) => {
-    console.log(req.body)
-    // get info from frontend fetch and create the recordedsong and association in db
+    //console.log(req.body)
+    //get info from frontend fetch and create the recordedsong and association in db
     let user = await User.findByPk(1)
     let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
     song.setUser(user.id)
@@ -80,14 +80,14 @@ io.on('connection', socket =>{
     })
 
 //     // real-time audio sending
-//     socket.on('audioBuffer', audioBuffer => {
-//        socket.broadcast.emit('audioBuffer', audioBuffer)
-//        //io.sockets
-//        console.log(audioBuffer) 
-//     })
-//    socket.on('abort',()=>{
-//        socket.broadcast.emit('abort')
-//    })
+    socket.on('audioBuffer', audioBuffer => {
+       socket.broadcast.emit('audioBuffer', audioBuffer)
+       //io.sockets
+       console.log(audioBuffer) 
+    })
+   socket.on('abort',()=>{
+       socket.broadcast.emit('abort')
+   })
    
 })
 

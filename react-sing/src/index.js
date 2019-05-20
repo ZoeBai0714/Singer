@@ -16,7 +16,8 @@ const initState = {
     mySongs:[],
     record:false,
     blobURL:"",
-    blobString: ""
+    blobString: "",
+    blobObj:{}
 }
 
 export const store = createStore(MySongsReducer, initState, middleware)

@@ -15,7 +15,10 @@ const MySongsReducer = (state, action) => {
         
         case 'BLOBURL':
             return {...state, blobURL: action.blobURL}
-        break;    
+        break;  
+        
+        case 'BLOBOBJ':
+            return {...state, blobObj: action.blobObj}
     } 
    return state
 }

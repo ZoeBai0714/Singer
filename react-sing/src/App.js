@@ -5,8 +5,12 @@ import Recorder from './Component/Recorder'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
 import MySongs from './Component/MySongs';
-const io = socketIO('localhost:3000/')
-// const io = socketIO('http://10.185.5.84:3000/')
+//const io = socketIO('localhost:3000/')
+ const io = socketIO('http://10.185.6.102:3000/')
+
+const MainPage = () => (
+  <div></div>
+)
 
 class App extends React.Component {
   state = {
@@ -20,7 +24,7 @@ class App extends React.Component {
     this.setState({
       songIds: songIds
     })
-  } 
+  }  
 
   reaction = (e) => {
     e.preventDefault()
@@ -38,45 +42,46 @@ class App extends React.Component {
 
 
   componentDidMount() {
-    //var sourceBuffer, audioElement, mediaSource
+    var sourceBuffer, audioElement, mediaSource
     io.on('comment', messageData => {
       const commentArea = document.getElementById('output')
       return commentArea.innerHTML += '<p>' + messageData.handle + ':' + messageData.message + '</p>'
     })
-  //   io.on('audioBuffer', (arrayBuffer) => {
-  //     if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
-  //   })
+        io.on('audioBuffer', (arrayBuffer) => {
+          if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
+        })
 
-  //   io.on('abort', () =>{
-  //     sourceOpen()
-  //   })
+        io.on('abort', () =>{
+          sourceOpen()
+        })
 
 
-  //   function sourceOpen(){ 
-  //     audioElement = document.createElement('audio');
-  //     mediaSource = new MediaSource();
-  //     audioElement.src = URL.createObjectURL(mediaSource);
-  //     audioElement.autoplay = true
-  //     mediaSource.addEventListener('sourceopen', e => {
-  //       var mime = "audio/webm;codecs=opus";
-  //       var mediaSource = e.target;
-  //       sourceBuffer = mediaSource.addSourceBuffer(mime);        
-  //     });
-  //   }
-  //   sourceOpen()
-  // }
+        function sourceOpen(){ 
+          audioElement = document.createElement('audio');
+          mediaSource = new MediaSource();
+          audioElement.src = URL.createObjectURL(mediaSource);
+          audioElement.autoplay = true
+          mediaSource.addEventListener('sourceopen', e => {
+            var mime = "audio/webm;codecs=opus";
+            var mediaSource = e.target;
+            sourceBuffer = mediaSource.addSourceBuffer(mime);        
+          });
+        }
+        sourceOpen()
+      }
 
-  // abort = () =>{
-  //  io.emit('abort')
-  // }
+      abort = () =>{
+      io.emit('abort')
+      }
 
-  // sendAudioBuffer = bufferData => {
-  //   
-  //   io.emit('audioBuffer', bufferData)
-  // }
-  // {
-  //   bufferData: bufferData
-   }
+      sendAudioBuffer = bufferData => {
+        
+        io.emit('audioBuffer', bufferData)
+      }
+      // {
+      //   bufferData: bufferData
+      //  }
+      
   render() {
     return (
       <div>
