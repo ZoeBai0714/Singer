@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       blobURL:{
-        type:Sequelize.STRING
+        type:Sequelize.STRING//TEXT('long'), BLOB not work, 
       },
       //association
       userId:{

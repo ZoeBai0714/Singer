@@ -5,7 +5,8 @@ export default class Main extends React.Component{
     handleSubmit = (e) =>{
         e.preventDefault()
         let query = (e.target.children[0].value).toLowerCase()
-        const URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCQHthJbbEt6osR39NsST13g&q=${query}&key=AIzaSyBlG_6DX-JMovaElRRI4KqXl_k0KAyHH_0`
+        console.log(query)
+        const URL =`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCQHthJbbEt6osR39NsST13g&q=${query}&key=AIzaSyBlG_6DX-JMovaElRRI4KqXl_k0KAyHH_0`
         fetch(URL)
         .then((res) => res.json())
         .then(songData => {

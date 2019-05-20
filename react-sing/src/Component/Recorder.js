@@ -1,38 +1,44 @@
 import React from 'react';
 import { ReactMic } from 'react-mic';
+import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 const serverURL = 'http://localhost:3000'
 const io = socketIO('localhost:3000/')
 // const io = socketIO('http://10.185.5.84:3000/')
 
-// import AudioContext from './AudioContext';
-// import AudioPlay from './AudioPlay'
-export default class Recorder extends React.Component {
-    state = {
-        record: false
-    }
+const mapStateToProps = state =>{
+  return  { 
+           record: state.record,
+           blobURL:state.blobURL,
+           blobString: state.blobString
+          }
+}
 
-    startRecording = () => {
-        this.setState({
-          record: true
-        });
+const mapDispatchToProps = {
+    changeRecordStatus: (status) => ({type: 'CHANGE_RECORD_STATUS', record:status}),
+    saveBlobURL: (blobURL) =>({type: 'BLOBURL', blobURL:blobURL}),
+    saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}) 
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+ class Recorder extends React.Component {
+    
+      startRecording = () => {
+        this.props.changeRecordStatus(true)
         // start converting blob into buffer for live stream
         // setTimeout(this.onData, 1000)
       }
     
       stopRecording = () => {
-        this.setState({
-          record: false
-        }); 
-
+        this.props.changeRecordStatus(false)
       }
     
       onData = (recordedBlob)=> {
-        //console.log('chunk of real-time data is: ', recordedBlob);
+        console.log('chunk of real-time data is: ', recordedBlob.blobURL);
         // fetch(recordedBlob)
         //   .then(res => res.arrayBuffer())
         //   .then(bufferData => {
-          console.log(recordedBlob)
+          //console.log(recordedBlob)
                // real-time 
               //this.props.sendAudioBuffer(recordedBlob)
           // }
@@ -40,19 +46,36 @@ export default class Recorder extends React.Component {
       }
     
       onStop = (recordedBlob)=> {
-        console.log('recordedBlob is: ', recordedBlob);
-        this.setState({
-            record:false,
-            blobURL: recordedBlob.blobURL
-        })
+        this.props.changeRecordStatus(false)
+        this.props.saveBlobURL(recordedBlob.blobURL)
         //this.props.abort(recordedBlob)
-        console.log(recordedBlob.blobURL)
+
+        const reader = new FileReader() 
+        reader.readAsDataURL(recordedBlob.blob);
+
+
+        //convert blob into base64data
+        let data = ""
+        reader.onloadend = ()=> { 
+         data = reader.result;
+         //data:audio/webm;codecs=opus;base64,
+         data = data.split('base64,')[1]
+         this.props.saveBlobString(data)
+        }
+        console.log('recordedBlob is: ', recordedBlob.blobURL);
       }
+
 
      onSave = e =>{
        e.preventDefault();
-       console.log(e.target.children[3].value)
-       // save this into database by fetch post method
+
+      //  const formData = {}
+      //  formData['name'] = e.target.children[3].value
+
+      //  const formData = new FormData()
+      //  formData.append('name', e.target.children[3].value)
+      //  formData.append('blob', blobThingy)
+        // save this into database by fetch post method
         fetch(`${serverURL}/recorded-songs`, {
           method: "POST",
           headers:{
@@ -62,26 +85,26 @@ export default class Recorder extends React.Component {
           body: JSON.stringify({
             name: e.target.children[3].value,
             likes: 0,
-            blobURL: this.state.blobURL
+            blobURL: this.props.blobString
           })
-        }).then(res => res.json())
-          .then(data => console.log(data)) 
-       
+        
+        })
      }      
       
     
     render(){
-      const {blobURL} = this.state
+      console.log(this.props.blobString)
+      //const {blobURL} = this.state
         return(
            <div>
-           <ReactMic record={this.state.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
+           <ReactMic record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
             strokeColor="#000000" backgroundColor="#FF4081" nonstop={true} duration={5} />
             <button onClick={this.startRecording} type="button">Start</button>
             <button onClick={this.stopRecording} type="button">Stop</button>
 
            
             <article class="clip">
-            <audio ref = "audioSource" controls = "controls" src = {blobURL} ></audio>
+            <audio ref = "audioSource" controls = "controls" src = {this.props.blobURL} ></audio>
             <button>Delete</button>
             </article>
 
@@ -96,8 +119,8 @@ export default class Recorder extends React.Component {
         )
     }
 }
+)
 
 /*
- audioURL = window.URL.createObjectURL(blob);
-  audio.src = audioURL;
+
 */

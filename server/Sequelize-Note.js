@@ -73,4 +73,12 @@
 
 important : make sure we install body-parser, and have this line of code: app.use(bodyParser.json())
 
+11. create instance and attach association
+  app.post('/recorded-songs', urlencodedParser, async (req, res) => {
+    console.log(req.body)
+    // get info from frontend fetch and create the recordedsong and association in db
+    let user = await User.findByPk(1)
+    let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
+    song.setUser(user.id)
+})
 */

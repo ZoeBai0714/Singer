@@ -11,17 +11,16 @@ const io = socketIO('localhost:3000/')
 class App extends React.Component {
   state = {
     songIds: [],
-    record: false,
     handle: "",
     comment: ""
-  }
+  } 
 
   // pass videoIds to songList 
   songList = (songIds) => {
     this.setState({
       songIds: songIds
     })
-  }
+  } 
 
   reaction = (e) => {
     e.preventDefault()
@@ -85,7 +84,7 @@ class App extends React.Component {
         <SongList songIds={this.state.songIds} />
         <Recorder sendAudioBuffer={this.sendAudioBuffer} />
         <Comment reaction={this.reaction} handle={this.state.handle} comment={this.state.comment}  /*displayComments = {this.displayComments}*/ />
-        <MySongs/>
+        <MySongs />
       </div>
 
     )
@@ -109,5 +108,5 @@ export default App;
    gapi.client.load("youtube", "v3", function(){
 
    })
-}
+ }
  */

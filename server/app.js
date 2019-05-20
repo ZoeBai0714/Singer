@@ -48,19 +48,20 @@ app.get('/recorded-songs', (req, res) =>{
     RecordedSong.findAll({ include:[{model: User}]})
     .then(songs => res.json(songs))
 })
-
+ 
 
 app.post('/recorded-songs', urlencodedParser, async (req, res) => {
+    console.log(req.body)
     // get info from frontend fetch and create the recordedsong and association in db
-    // let user = await User.findByPk(1)
-    // let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
-    // song.setUser(user.id)
+    let user = await User.findByPk(1)
+    let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
+    song.setUser(user.id)
 })
 
- User.findByPk(1)
- .then(user => {
-     user.getRecordedSongs()
-     .then(songs => console.log(songs[1].dataValues.blobURL))}) 
+//  User.findByPk(1)
+//  .then(user => {
+//      user.getRecordedSongs()
+//      .then(songs => console.log(songs[1].dataValues.blobURL))})  COMMENT THIS OUT LATER!
  
 
 app.get('/recorded-songs/:id', (req, res)=>{
@@ -93,7 +94,7 @@ io.on('connection', socket =>{
 
 
     // seed data
-    // for (let i = 0; i < 500; i++){
+    // for (let i = 0; i < 100; i++){
     //  User.create({
     //      username: faker.name.findName(),
     //      password: faker.internet.password(),
