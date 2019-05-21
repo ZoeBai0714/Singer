@@ -48,7 +48,17 @@ class App extends React.Component {
       return commentArea.innerHTML += '<p>' + messageData.handle + ':' + messageData.message + '</p>'
     })
         io.on('audioBuffer', (arrayBuffer) => {
-          if(sourceBuffer && !sourceBuffer.updating) sourceBuffer.appendBuffer(arrayBuffer);
+          console.log('getting packet')
+          if(sourceBuffer && !sourceBuffer.updating) {
+            console.log('in here?')
+            sourceBuffer.appendBuffer(arrayBuffer);
+          } else {
+            function delayBuffer(){
+              sourceBuffer.appendBuffer(arrayBuffer)
+              sourceBuffer.removeEventListener('updateend',  delayBuffer)
+            }
+            sourceBuffer.addEventListener('updateend', delayBuffer)
+          }
         })
 
         io.on('abort', () =>{
@@ -62,9 +72,11 @@ class App extends React.Component {
           audioElement.src = URL.createObjectURL(mediaSource);
           audioElement.autoplay = true
           mediaSource.addEventListener('sourceopen', e => {
+            console.log('h i')
             var mime = "audio/webm;codecs=opus";
             var mediaSource = e.target;
-            sourceBuffer = mediaSource.addSourceBuffer(mime);        
+            sourceBuffer = mediaSource.addSourceBuffer(mime);
+            mediaSource.addEventListener('sourceended', console.log)        
           });
         }
         sourceOpen()
@@ -87,7 +99,7 @@ class App extends React.Component {
       <div>
         <SearchBar songList={this.songList} />
         <SongList songIds={this.state.songIds} />
-        <Recorder sendAudioBuffer={this.sendAudioBuffer} />
+        <Recorder sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} />
         <Comment reaction={this.reaction} handle={this.state.handle} comment={this.state.comment}  /*displayComments = {this.displayComments}*/ />
         <MySongs />
       </div>

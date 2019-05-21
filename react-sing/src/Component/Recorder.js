@@ -36,7 +36,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       }
     
       onData = (recordedBlob)=> {
-        console.log('chunk of real-time data is: ', recordedBlob.blobURL);
+        console.log('chunk of real-time data is:: ', recordedBlob.blobURL);
         // fetch(recordedBlob)
         //   .then(res => res.arrayBuffer())
         //   .then(bufferData => {
@@ -44,22 +44,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                // real-time 
             this.props.sendAudioBuffer(recordedBlob)
           // }
-          ///*console.log(bufferData)*/)
+          ///*console.log(bufferData)*/) 
       }
     
       onStop = (recordedBlob)=> {
         this.props.changeRecordStatus(false)
         this.props.saveBlobURL(recordedBlob.blobURL)
         //this.props.saveBlobObj(recordedBlob.blob)// recordedBlob
-        //this.props.abort(recordedBlob)
+        this.props.abort()
 
         const reader = new FileReader() 
-        reader.readAsDataURL(recordedBlob.blob);
+        reader.readAsDataURL(recordedBlob.blob) 
 
 
         //convert blob into base64data
         let data = ""
-        reader.onloadend = ()=> { 
+        reader.onloadend = ()=> {
          data = reader.result;
          //data:audio/webm;codecs=opus;base64,
          data = data.split('base64,')[1]
@@ -92,7 +92,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       
     
     render(){
-      console.log(this.props.blobString)
+      // console.log(this.props.blobString)
       //const {blobURL} = this.state
         return(
            <div>
@@ -100,7 +100,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             strokeColor="#000000" backgroundColor="#FF4081" nonstop={true} duration={5} />
             <button onClick={this.startRecording} type="button">Start</button>
             <button onClick={this.stopRecording} type="button">Stop</button>
-
+            <button>Allow Streaming</button>
            
             <article class="clip">
             <audio ref = "audioSource" controls = "controls" src = {this.props.blobURL} ></audio>
