@@ -1,5 +1,11 @@
 'use strict';
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
 module.exports = (sequelize, DataTypes) => {
+  const authenticate  = password => {
+    return bcrypt.compareSync(password, this.password_digest)
+  }
   const User = sequelize.define('User', {
     username: DataTypes.STRING,
     password: DataTypes.STRING,

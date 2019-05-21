@@ -12,11 +12,11 @@ const MySongsReducer = (state, action) => {
         case 'BLOBSTRING':
             return {...state, blobString: action.blob}
         break;  
-        
+         
         case 'BLOBURL':
             return {...state, blobURL: action.blobURL}
         break;  
-        
+         
         case 'BLOBOBJ':
             return {...state, blobObj: action.blobObj}
         break;
@@ -28,6 +28,10 @@ const MySongsReducer = (state, action) => {
         case 'USERNAME':
             return {...state, username: action.username}
         break;
+
+        case 'PASSWORD':
+            return {...state, password: action.password}
+        break;
         
         case 'COMMENT':
             return {...state, comment: action.comment}
@@ -36,5 +40,5 @@ const MySongsReducer = (state, action) => {
    return state
 }
 
- 
+  
 export default MySongsReducer

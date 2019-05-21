@@ -7,6 +7,8 @@ const faker = require("faker");
 const bodyParser = require('body-parser')
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const socketIO = require("socket.io");
+const jwt = require('jsonwebtoken')
+
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cors());
 server.listen(port, () => console.log(`Listening on port ${port}`));
@@ -16,7 +18,24 @@ const User = require('./models').User;
 const RecordedSong = require('./models').RecordedSong
 const Comment = require('./models').Comment
 
-//Routes for data
+
+//Login and authentication
+app.post ('/login', (req, res) => {
+    //console.log(req.body)
+    User.findOne({where: {username: req.body.username}})
+    .then(user => {
+        //console.log(user)
+        if(user == null){
+         console.log("User doesn't exist")
+        }else{
+            if(user.authenticate(req.body.password)){
+                res.json(user.toJSON())
+            }
+        }
+    })
+})
+
+//Routes for data 
 app.get('/users', (req, res) =>{
     User.findAll({
         //include associated model 

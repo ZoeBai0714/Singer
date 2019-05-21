@@ -58,8 +58,6 @@ class App extends React.Component {
   }
 
 
-
-
   componentDidMount() {
     var sourceBuffer, audioElement, mediaSource
     io.on('comment', messageData => {
@@ -114,7 +112,7 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-         <Route exact path = '/singer' component = {Home} />
+         <Route exact path = '/singer' render = {() => <Home/>} />
          <Route exact path = '/my-page' render = {() => <MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
           reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>}
