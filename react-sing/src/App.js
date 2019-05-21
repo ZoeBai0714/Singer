@@ -1,41 +1,60 @@
 import React from 'react';
+import {connect} from 'react-redux'
+import {BrowserRouter, Route} from 'react-router-dom'
+import Home from './Containers/Home'
 import SearchBar from './Component/SearchBar'
 import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
 import MySongs from './Component/MySongs';
-//const io = socketIO('localhost:3000/')
- const io = socketIO('http://10.185.6.102:3000/')
+const io = socketIO('localhost:3000/')
+ //const io = socketIO('http://10.185.6.102:3000/')
 
-const MainPage = () => (
-  <div></div>
+const MainPage = (props) => (
+  <div>
+        <SearchBar songList={props.songList} />
+        <SongList songIds={props.songIds} />
+        <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
+        <Comment reaction={props.reaction} username={props.username} comment={props.comment}  /*displayComments = {this.displayComments}*/ />
+        <MySongs />
+  </div>
 )
+  
+const mapStateToProps = state =>{
+  return {
+    songIds: state.songIds, 
+    username: state.username,
+    comment: state.comment
+         }
+}
 
+const mapDispatchToProps = {
+  getSongIds: (songIds) => ({type: 'SONGIDS', songIds: songIds}),
+  getUsername: (username) => ({type: 'USERNAME', username:username}),
+  userComment: (comment) => ({type: 'COMMENT', comment:comment})
+}
+
+export default connect (mapStateToProps, mapDispatchToProps )(
 class App extends React.Component {
-  state = {
-    songIds: [],
-    handle: "",
-    comment: ""
-  } 
-
+  
   // pass videoIds to songList 
   songList = (songIds) => {
-    this.setState({
-      songIds: songIds
-    })
+   
+    
+    this.props.getSongIds(songIds)
   }  
 
   reaction = (e) => {
     e.preventDefault()
     io.emit('comment', {
       message: e.target.children[2].value,
-      handle: e.target.children[0].value,
+      username: e.target.children[0].value,
     })
-    this.setState({
-      handle: e.target.children[0].value,
-      comment: e.target.children[2].value
-    })
+
+    this.props.getUsername(e.target.children[0].value)
+    this.props.userComment(e.target.children[2].value)
+   
   }
 
 
@@ -45,7 +64,7 @@ class App extends React.Component {
     var sourceBuffer, audioElement, mediaSource
     io.on('comment', messageData => {
       const commentArea = document.getElementById('output')
-      return commentArea.innerHTML += '<p>' + messageData.handle + ':' + messageData.message + '</p>'
+      return commentArea.innerHTML += '<p>' + messageData.username + ':' + messageData.message + '</p>'
     })
         io.on('audioBuffer', (arrayBuffer) => {
           console.log('getting packet')
@@ -90,26 +109,23 @@ class App extends React.Component {
         
         io.emit('audioBuffer', bufferData)
       }
-      // {
-      //   bufferData: bufferData
-      //  }
+
       
   render() {
     return (
-      <div>
-        <SearchBar songList={this.songList} />
-        <SongList songIds={this.state.songIds} />
-        <Recorder sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} />
-        <Comment reaction={this.reaction} handle={this.state.handle} comment={this.state.comment}  /*displayComments = {this.displayComments}*/ />
-        <MySongs />
-      </div>
-
+      <BrowserRouter>
+         <Route exact path = '/singer' component = {Home} />
+         <Route exact path = '/my-page' render = {() => <MainPage
+          songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
+          reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>}
+          />
+      </BrowserRouter>
     )
   }
 }
+)
 
-
-export default App;
+// export default App;
  /*
  const handleSubmit = (e) =>{
    e.preventDefault()

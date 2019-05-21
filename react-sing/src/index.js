@@ -13,11 +13,14 @@ const middleware = compose(
 )
 
 const initState = {
-    mySongs:[],
-    record:false,
-    blobURL:"",
+    songIds: [],
+    username: "",
+    comment: "", 
+    mySongs: [],
+    record: false,
+    blobURL: "",
     blobString: "",
-    blobObj:{}
+    //blobObj: {}
 }
 
 export const store = createStore(MySongsReducer, initState, middleware)

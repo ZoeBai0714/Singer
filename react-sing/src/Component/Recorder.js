@@ -3,15 +3,15 @@ import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 const serverURL = 'http://localhost:3000'
-//const io = socketIO('localhost:3000/')
-const io = socketIO('http://10.185.6.102:3000/')
+const io = socketIO('localhost:3000/')
+//const io = socketIO('http://10.185.6.102:3000/')
 
 const mapStateToProps = state =>{
   return  { 
            record: state.record,
            blobURL:state.blobURL,
            blobString: state.blobString,
-           blobObj: state.blobObj
+           //blobObj: state.blobObj
           }
 }
 
@@ -19,7 +19,7 @@ const mapDispatchToProps = {
     changeRecordStatus: (status) => ({type: 'CHANGE_RECORD_STATUS', record:status}),
     saveBlobURL: (blobURL) =>({type: 'BLOBURL', blobURL:blobURL}),
     saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}),
-    saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
+    //saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(

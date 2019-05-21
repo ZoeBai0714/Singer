@@ -19,6 +19,19 @@ const MySongsReducer = (state, action) => {
         
         case 'BLOBOBJ':
             return {...state, blobObj: action.blobObj}
+        break;
+        
+        case 'SONGIDS':
+            return {...state, songIds: action.songIds}
+        break;
+        
+        case 'USERNAME':
+            return {...state, username: action.username}
+        break;
+        
+        case 'COMMENT':
+            return {...state, comment: action.comment}
+        break;    
     } 
    return state
 }
