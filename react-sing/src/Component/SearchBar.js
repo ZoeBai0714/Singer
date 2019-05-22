@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 
 const mapStateToProps = state =>{
     return{
@@ -29,6 +30,7 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
 
     logout = () => {
       this.props.loginStatus(false)
+      localStorage.clear()
       console.log(this.props.login)
     }
      
@@ -40,7 +42,7 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
                  <input type = "text" placeholder = "Your next song is..."/>
                  <input type = "submit"/>
              </form>
-         <button onClick = {this.logout}>Logout</button>
+         <button onClick = {this.logout}><Link to= '/singer' style = {{textDecoration: 'none'}}>Logout</Link></button>
          </div>
      )
  }

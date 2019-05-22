@@ -109,10 +109,11 @@ class App extends React.Component {
 
       
   render() {
+    console.log(localStorage.userid)
     return (
       <BrowserRouter>
-         <Route exact path = '/singer' render = {() =>this.props.login == true? (<Redirect to ='/my-page'/>): (<Home/>) } />
-         <Route exact path = '/my-page' render = {() =>this.props.login == true?(<MainPage
+         <Route exact path = '/singer' render = {() =>this.props.login == true ? (<Redirect to ='/my-page'/>): (<Home/>) } />
+         <Route exact path = '/my-page' render = {() =>this.props.login == true || localStorage.length > 0?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
           reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>): (<Home/>)
           }/>

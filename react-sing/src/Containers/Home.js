@@ -25,10 +25,15 @@ const mapDispatchToProps = {
  
 export default connect (mapStateToProps, mapDispatchToProps) (class Home extends React.Component {
     componentDidMount(){
-        io.on('login', user => {
+        io.on('login', (user, token) => {
             this.props.loginStatus(true)
             this.props.getUserId(user.id)
+            localStorage.setItem('username', user.username)
+            localStorage.setItem('userid', user.id)
+            localStorage.setItem('token', token)
+            console.log(localStorage)
         })
+
      }
 
 
@@ -41,15 +46,15 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
             fetch(`${serverURL}/login`, {
                 method: "POST",
                 headers:{
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                     Accept: "application/json"
                         },
                 body: JSON.stringify({
                     username: username,
                     password: password
-                })        
-            })
-            
-           
+                })
+               }) 
+        
     }
 
 

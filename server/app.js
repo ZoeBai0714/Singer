@@ -19,23 +19,8 @@ const User = require('./models').User;
 const RecordedSong = require('./models').RecordedSong
 const Comment = require('./models').Comment
 
-verifyToken = (req, res, next) =>{
-  //Get auth header value
-  const bearerHeader = req.headers['authorization']
-  if(typeof bearerHeader !== 'undefined'){
-   const bearer = bearerHeader.split(' ')
-   const bearToken = bearer[1];
-   //set the token
-   req.token = bearToken;
-   next()
-  }else{
-    //forbidden
-    res.sendStatus(403);  
-  }
-}
-
  
-app.post ('/login', /*verifyToken,*/ (req, res) => {
+app.post ('/login', (req, res) => {
     //console.log(req.body)
     User.findOne({where: {username: req.body.username}})
     .then(user => {
@@ -43,25 +28,12 @@ app.post ('/login', /*verifyToken,*/ (req, res) => {
         bcrypt.compare(req.body.password, hash, (err, res)=>{
            if (res == true){
              //assign token async and send back user login info to frontend to change login status
-             jwt.sign({user:user}, 'secretkey', (err, token)=>{
-                // res.json({
-                //     token:token
-                // })
-                console.log(token) 
-                io.emit('login', user)
-            })         
-            //  io.emit('login', user)
+                jwt.sign({user:user}, 'secretkey', (err, token)=>{
+                    io.emit('login', user, token)
+                })         
+           
            }}
         )
-    //     jwt.verify(req.token, 'secretkey', (err, authData)=>{
-    //         if(err){
-    //             res.sendStatus(403)
-    //         }else{
-    //            res.json({
-    //                authData
-    //            }) 
-    //         }
-    //    })
     })
 })
 

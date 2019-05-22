@@ -13,7 +13,7 @@ const mapStateToProps = state =>{
 const mapDispatchToProps = {
            fetchSongs: (id) => {
             return dispatch =>{    
-                fetch(`${serverURL}/users/${id}/recorded-songs`)
+                fetch(`${serverURL}/users/${localStorage.userid}/recorded-songs`)
                 .then(res => res.json())
                 .then(userSongs =>{ 
                     dispatch ({type: 'USER_SONGS', mySongs:userSongs})
