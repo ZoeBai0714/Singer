@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const socketIO = require("socket.io");
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cors());
@@ -18,22 +19,53 @@ const User = require('./models').User;
 const RecordedSong = require('./models').RecordedSong
 const Comment = require('./models').Comment
 
+verifyToken = (req, res, next) =>{
+  //Get auth header value
+  const bearerHeader = req.headers['authorization']
+  if(typeof bearerHeader !== 'undefined'){
+   const bearer = bearerHeader.split(' ')
+   const bearToken = bearer[1];
+   //set the token
+   req.token = bearToken;
+   next()
+  }else{
+    //forbidden
+    res.sendStatus(403);  
+  }
+}
 
-//Login and authentication
-app.post ('/login', (req, res) => {
+ 
+app.post ('/login', /*verifyToken,*/ (req, res) => {
     //console.log(req.body)
     User.findOne({where: {username: req.body.username}})
     .then(user => {
-        //console.log(user)
-        if(user == null){
-         console.log("User doesn't exist")
-        }else{
-            if(user.authenticate(req.body.password)){
-                res.json(user.toJSON())
-            }
-        }
+        let hash = user.password_digest
+        bcrypt.compare(req.body.password, hash, (err, res)=>{
+           if (res == true){
+             //assign token async and send back user login info to frontend to change login status
+             jwt.sign({user:user}, 'secretkey', (err, token)=>{
+                // res.json({
+                //     token:token
+                // })
+                console.log(token) 
+                io.emit('login', user)
+            })         
+            //  io.emit('login', user)
+           }}
+        )
+    //     jwt.verify(req.token, 'secretkey', (err, authData)=>{
+    //         if(err){
+    //             res.sendStatus(403)
+    //         }else{
+    //            res.json({
+    //                authData
+    //            }) 
+    //         }
+    //    })
     })
 })
+
+
 
 //Routes for data 
 app.get('/users', (req, res) =>{
@@ -47,6 +79,13 @@ app.get('/users', (req, res) =>{
             }]
    
     }).then(users => res.json(users))
+})
+
+app.post('/users', urlencodedParser, async (req, res) => {
+    bcrypt.hash(req.body.password, 10, (err, hash)=>{
+      User.create({username: req.body.username, password_digest: hash })
+    })
+   
 })
  
 app.get('/users/:id', (req, res) =>{
@@ -107,16 +146,17 @@ io.on('connection', socket =>{
    socket.on('abort',()=>{
        socket.broadcast.emit('abort')
    })
+
    
 })
   
 
 
     // seed data
-    // for (let i = 0; i < 100; i++){
+    // for (let i = 0; i < 1; i++){
     //  User.create({
-    //      username: faker.name.findName(),
-    //      password: faker.internet.password(),
+    //      username: 'Zoe',//faker.name.findName(),
+    //      password: hashPassword('Zoe'),//faker.internet.password(),  call the hashPassword function and save the hashed string into db
     //      profile: faker.image.imageUrl(),
     //      bio: faker.lorem.sentence(),
     //      recordedSong: ""

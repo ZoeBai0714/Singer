@@ -4,13 +4,16 @@ import { store } from '../index.js';
 const serverURL = 'http://localhost:3000'
 
 const mapStateToProps = state =>{
-     return { mySongs: state.mySongs }
+     return { 
+         userId: state.userId,
+         mySongs: state.mySongs
+         }
 }
  
 const mapDispatchToProps = {
-           fetchSongs: () => {
+           fetchSongs: (id) => {
             return dispatch =>{    
-                fetch(`${serverURL}/users/1/recorded-songs`)
+                fetch(`${serverURL}/users/${id}/recorded-songs`)
                 .then(res => res.json())
                 .then(userSongs =>{ 
                     dispatch ({type: 'USER_SONGS', mySongs:userSongs})
@@ -23,14 +26,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
    class MySongs extends React.Component {
 
-        componentDidMount(){
-            this.props.fetchSongs()
+        fetchUserId = () => {
+            this.props.fetchSongs(this.props.userId)
         }
 
         render(){
             return(
                 <div>
-                    <h3>My songs</h3>
+                    <button style = {{fontSize:'20px'}} onClick = {this.fetchUserId}>My songs</button>
                     <ul>
                         {this.props.mySongs.map(song => 
                         <li>

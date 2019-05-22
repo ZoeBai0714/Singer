@@ -14,8 +14,9 @@ const middleware = compose(
 
 const initState = {
     songIds: [],
-    username: "",
-    password:"",
+    userId: "",
+    username: "",//
+    password:"",//
     login:false,
     comment: "", 
     mySongs: [],

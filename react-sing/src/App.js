@@ -1,15 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {BrowserRouter, Route} from 'react-router-dom'
+import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Home from './Containers/Home'
 import SearchBar from './Component/SearchBar'
 import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
-import MySongs from './Component/MySongs';
+import MySongs from './Component/MySongs'; 
 const io = socketIO('localhost:3000/')
- //const io = socketIO('http://10.185.6.102:3000/')
+//const io = socketIO('http://10.185.6.102:3000/')
 
 const MainPage = (props) => (
   <div>
@@ -25,7 +25,8 @@ const mapStateToProps = state =>{
   return {
     songIds: state.songIds, 
     username: state.username,
-    comment: state.comment
+    comment: state.comment,
+    login: state.login
          }
 }
 
@@ -40,8 +41,6 @@ class App extends React.Component {
   
   // pass videoIds to songList 
   songList = (songIds) => {
-   
-    
     this.props.getSongIds(songIds)
   }  
 
@@ -89,7 +88,7 @@ class App extends React.Component {
           audioElement.src = URL.createObjectURL(mediaSource);
           audioElement.autoplay = true
           mediaSource.addEventListener('sourceopen', e => {
-            console.log('h i')
+            // console.log('h i')
             var mime = "audio/webm;codecs=opus";
             var mediaSource = e.target;
             sourceBuffer = mediaSource.addSourceBuffer(mime);
@@ -112,11 +111,11 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-         <Route exact path = '/singer' render = {() => <Home/>} />
-         <Route exact path = '/my-page' render = {() => <MainPage
+         <Route exact path = '/singer' render = {() =>this.props.login == true? (<Redirect to ='/my-page'/>): (<Home/>) } />
+         <Route exact path = '/my-page' render = {() =>this.props.login == true?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
-          reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>}
-          />
+          reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>): (<Home/>)
+          }/>
       </BrowserRouter>
     )
   }

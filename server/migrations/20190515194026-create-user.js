@@ -9,10 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique:true
       },
-      password: {
-        type: Sequelize.STRING
+      password_digest: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       profile: {
         type: Sequelize.STRING

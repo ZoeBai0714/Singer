@@ -24,6 +24,10 @@ const MySongsReducer = (state, action) => {
         case 'SONGIDS':
             return {...state, songIds: action.songIds}
         break;
+
+        case 'USERID':
+            return {...state, userId: action.userId}
+        break;
         
         case 'USERNAME':
             return {...state, username: action.username}
@@ -31,6 +35,10 @@ const MySongsReducer = (state, action) => {
 
         case 'PASSWORD':
             return {...state, password: action.password}
+        break;
+
+        case 'LOGIN':
+            return {...state, login: action.login}
         break;
         
         case 'COMMENT':

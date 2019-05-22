@@ -1,7 +1,17 @@
 import React from 'react';
+import {connect} from 'react-redux'
 
+const mapStateToProps = state =>{
+    return{
+        login:state.login
+    }
+}
 
-export default class Main extends React.Component{
+const mapDispatchToProps = {
+    loginStatus: (status) => ({type: 'LOGIN', login:status})
+}
+
+export default connect (mapStateToProps, mapDispatchToProps)(class Main extends React.Component{
     handleSubmit = (e) =>{
         e.preventDefault()
         let query = (e.target.children[0].value).toLowerCase()
@@ -16,20 +26,26 @@ export default class Main extends React.Component{
              this.props.songList(songIds)
         }) 
     }
+
+    logout = () => {
+      this.props.loginStatus(false)
+      console.log(this.props.login)
+    }
      
  render(){
-    console.log(this.props)
+   // console.log(this.props.login)
      return(
          <div>
              <form onSubmit = {this.handleSubmit}>
                  <input type = "text" placeholder = "Your next song is..."/>
                  <input type = "submit"/>
              </form>
+         <button onClick = {this.logout}>Logout</button>
          </div>
      )
  }
 }
-
+)
 // https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCwTRjvjVge51X-ILJ4i22ew&q=shallow&key=AIzaSyBlG_6DX-JMovaElRRI4KqXl_k0KAyHH_0
 /*
 theKaraokeChannel: TheKARAOKEChannel 
