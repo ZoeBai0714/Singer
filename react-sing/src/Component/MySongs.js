@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { store } from '../index.js';
 const serverURL = 'http://localhost:3000'
+//const serverURL = 'http://10.185.6.107:3000'
 
 const mapStateToProps = state =>{
      return { 

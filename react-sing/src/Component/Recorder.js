@@ -4,31 +4,32 @@ import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 const serverURL = 'http://localhost:3000'
 const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.102:3000/')
+//const io = socketIO('http://10.185.6.107:3000/')
+//const serverURL = 'http://10.185.6.107:3000'
 
 const mapStateToProps = state =>{
   return  { 
            record: state.record,
            blobURL:state.blobURL,
            blobString: state.blobString,
+           roomId: state.roomId
            //blobObj: state.blobObj
           }
 }
-
+  
 const mapDispatchToProps = {
     changeRecordStatus: (status) => ({type: 'CHANGE_RECORD_STATUS', record:status}),
     saveBlobURL: (blobURL) =>({type: 'BLOBURL', blobURL:blobURL}),
     saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}),
+    saveRoomId: (roomId) => ({type: 'ROOMID', roomId:roomId})
     //saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
  class Recorder extends React.Component {
-    
+     
       startRecording = () => {
         this.props.changeRecordStatus(true)
-        // start converting blob into buffer for live stream
-        // setTimeout(this.onData, 1000)
       }
     
       stopRecording = () => {
@@ -88,32 +89,34 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             })
           
           })
-     }      
+     }
+     
+     createRoom = () =>{
+      //const roomId = document.getElementById('room-id').value
+      // this.props.saveRoomId(localStorage.userid)
+      // io.emit('create-room', localStorage.userid)
+     }
       
+     
     
     render(){
-      // console.log(this.props.blobString)
-      //const {blobURL} = this.state
         return(
            <div>
            <ReactMic record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
             strokeColor="#000000" backgroundColor="#FF4081" nonstop={true} duration={5} />
             <button onClick={this.startRecording} type="button">Start</button>
             <button onClick={this.stopRecording} type="button">Stop</button>
-            <button>Allow Streaming</button>
            
             <article class="clip">
             <audio ref = "audioSource" controls = "controls" src = {this.props.blobURL} ></audio>
             <button>Delete</button>
             </article>
-
             <form onSubmit = {this.onSave} action ="/recorded-songs" method = "POST" >
               <label>Save your song</label><br/>
               <label for = "song-name">Song name:</label>
               <input type = "text" name = "song-name" /><br/>           
               <input type = "submit" value = "save"/>
             </form>
-            
            </div>
         )
     }

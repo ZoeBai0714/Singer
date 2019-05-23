@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom'
 
 const mapStateToProps = state =>{
     return{
+        userId: state.userId,
+        username: state.username,
         login:state.login
     }
 }
@@ -33,11 +35,11 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
       localStorage.clear()
       console.log(this.props.login)
     }
-     
+
  render(){
-   // console.log(this.props.login)
      return(
          <div>
+             <h1>Welcome {localStorage.username}</h1>
              <form onSubmit = {this.handleSubmit}>
                  <input type = "text" placeholder = "Your next song is..."/>
                  <input type = "submit"/>

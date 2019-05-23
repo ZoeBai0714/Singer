@@ -5,17 +5,19 @@ import Home from './Containers/Home'
 import SearchBar from './Component/SearchBar'
 import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
+import LiveStreamSocket from './Component/LiveStreamSocket'
 import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
 import MySongs from './Component/MySongs'; 
 const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.102:3000/')
+//const io = socketIO('http://10.185.6.107:3000/')
 
 const MainPage = (props) => (
   <div>
         <SearchBar songList={props.songList} />
         <SongList songIds={props.songIds} />
         <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
+        <LiveStreamSocket/>
         <Comment reaction={props.reaction} username={props.username} comment={props.comment}  /*displayComments = {this.displayComments}*/ />
         <MySongs />
   </div>
@@ -26,7 +28,9 @@ const mapStateToProps = state =>{
     songIds: state.songIds, 
     username: state.username,
     comment: state.comment,
-    login: state.login
+    login: state.login,
+    roomId: state.roomId,
+    usersInTheRoom: state.usersInTheRoom
          }
 }
 
@@ -46,11 +50,12 @@ class App extends React.Component {
 
   reaction = (e) => {
     e.preventDefault()
-    io.emit('comment', {
+    io.emit('roomChat', {
       message: e.target.children[2].value,
       username: e.target.children[0].value,
+      room:this.props.roomId
     })
-
+    
     this.props.getUsername(e.target.children[0].value)
     this.props.userComment(e.target.children[2].value)
    
@@ -59,23 +64,28 @@ class App extends React.Component {
 
   componentDidMount() {
     var sourceBuffer, audioElement, mediaSource
-    io.on('comment', messageData => {
-      const commentArea = document.getElementById('output')
-      return commentArea.innerHTML += '<p>' + messageData.username + ':' + messageData.message + '</p>'
+    io.on('usersInTheRoom', messageData => {
+      console.log(this.props.roomId)
+      //console.log(messageData)
+      console.log(this.props.username)
+      if(this.props.roomId == messageData.room){
+        const commentArea = document.getElementById('output')
+        return commentArea.innerHTML += '<p>' + localStorage.username + ':' + messageData.message + '</p>'
+      }
     })
+
+      const queue = []
+
         io.on('audioBuffer', (arrayBuffer) => {
-          console.log('getting packet')
-          if(sourceBuffer && !sourceBuffer.updating) {
-            console.log('in here?')
-            sourceBuffer.appendBuffer(arrayBuffer);
-          } else {
-            function delayBuffer(){
-              sourceBuffer.appendBuffer(arrayBuffer)
-              sourceBuffer.removeEventListener('updateend',  delayBuffer)
-            }
-            sourceBuffer.addEventListener('updateend', delayBuffer)
-          }
+          queue.push(arrayBuffer)
+          if(!sourceBuffer) sourceOpen()
+          else if(queue.length === 1) feedBuffer()
         })
+
+        const feedBuffer = (e) => {
+          if(sourceBuffer && queue.length && !sourceBuffer.updating) sourceBuffer.appendBuffer(queue.shift())
+        }
+       
 
         io.on('abort', () =>{
           sourceOpen()
@@ -92,10 +102,11 @@ class App extends React.Component {
             var mime = "audio/webm;codecs=opus";
             var mediaSource = e.target;
             sourceBuffer = mediaSource.addSourceBuffer(mime);
-            mediaSource.addEventListener('sourceended', console.log)        
+            sourceBuffer.addEventListener('updateend', feedBuffer)
+            mediaSource.addEventListener('sourceended', e => console.log("HEREELKJS:ELKJLEKJ:IJOPFJPWOFIJEPOIFJWEOPIJ"))        
+            feedBuffer()          
           });
         }
-        sourceOpen()
       }
 
       abort = () =>{
@@ -109,7 +120,7 @@ class App extends React.Component {
 
       
   render() {
-    console.log(localStorage.userid)
+    console.log(this.props.roomId)
     return (
       <BrowserRouter>
          <Route exact path = '/singer' render = {() =>this.props.login == true ? (<Redirect to ='/my-page'/>): (<Home/>) } />

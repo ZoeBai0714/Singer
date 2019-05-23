@@ -37,7 +37,7 @@ app.post ('/login', (req, res) => {
     })
 })
 
-
+ 
 
 //Routes for data 
 app.get('/users', (req, res) =>{
@@ -100,14 +100,19 @@ app.get('/recorded-songs/:id', (req, res)=>{
 })
 
 //setup socket
+
+// for livestream
+const connectedUsers = {}
+const rooms = {} 
 const io = socketIO(server)
 io.on('connection', socket =>{
     console.log('socket working')
-    socket.on('comment', messageData => {
-      //refer to all the sockets connected to the server  
-      io.sockets.emit('comment', messageData)
-      console.log(messageData)
-    })
+    // socket.on('comment', messageData => {
+    //     io.sockets.in(`room ${messageData.room}`).emit(messageData)
+    //   //refer to all the sockets connected to the server  
+    //   //io.sockets.emit('comment', messageData)
+    //   console.log(messageData)
+    // })
 
 //     // real-time audio sending
     socket.on('audioBuffer', audioBuffer => {
@@ -118,8 +123,32 @@ io.on('connection', socket =>{
    socket.on('abort',()=>{
        socket.broadcast.emit('abort')
    })
+   // add user in the room for live stream
+   socket.on('roomChat', (obj)=>{
+    //    connectedUsers[socket.id] = obj.roomId
+    //    console.log(connectedUsers)
+    //    console.log(socket.id)
+       socket.join(`room ${obj.roomId}`)
+        rooms[obj.roomId] = {
+            id: obj.roomId,
+            users: [obj.username]
+        }
+        if(!rooms[obj.roomId].users.includes(obj.username)){
+            rooms[obj.roomId].users.push(obj.username)
+        }
+        //console.log(rooms[obj.roomId])
+        console.log(rooms[obj.roomId].users)
+        io.sockets.in(`room ${obj.roomId}`).emit('usersInTheRoom', obj/*rooms[obj.roomId].users*/)
+        //io.sockets.in(`room ${obj.roomId}`).emit('usersComment', rooms[obj.roomId].users)
 
-   
+   })
+
+   socket.on('comment', messageData => {
+    io.sockets.in(`room ${messageData.room}`).emit('comment',messageData)
+  //refer to all the sockets connected to the server  
+  //io.sockets.emit('comment', messageData)
+   console.log(messageData)
+   })
 })
   
 

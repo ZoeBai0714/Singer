@@ -2,7 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 const io = socketIO('localhost:3000/')
+//const io = socketIO('http://10.185.6.107:3000/')
 const serverURL = 'http://localhost:3000'
+//const serverURL = 'http://10.185.6.107:3000'
 
 
 const mapStateToProps = state =>{

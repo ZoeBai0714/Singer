@@ -46,4 +46,18 @@ componentDidMount(){
 }
 
 
+7. socket logic
+ first emit the info from fromend where you need to send it to the backend
+   io.emit('channel name', data)   ---->
+
+ backend receive the data
+   socket.on('channel name', data => console.log(data))
+     socket.join(`room ${obj.roomId}`) this is where it filters users
+ 
+ 
+ backend broadcast to frontend
+        io.sockets.in(`room ${obj.roomId}`).emit('new channel name', data)
+      
+ frontend all clients receive the data
+    io.on('new channel name', data => {  if(this.props.roomId == messageData.room) console.log(data)/ do something with the data})     
 */

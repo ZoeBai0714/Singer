@@ -23,6 +23,8 @@ const initState = {
     record: false,
     blobURL: "",
     blobString: "",
+    roomId:"",
+    usersInTheRoom:[]
     //blobObj: {}
 }
 
