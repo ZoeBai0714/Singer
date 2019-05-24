@@ -1,18 +1,16 @@
 import React from 'react';
 import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
-import socketIO from 'socket.io-client';
-const serverURL = 'http://localhost:3000'
-const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.107:3000/')
-//const serverURL = 'http://10.185.6.107:3000'
+// const serverURL = 'http://localhost:3000'
+const serverURL = 'http://10.185.6.189:3000'
 
 const mapStateToProps = state =>{
   return  { 
            record: state.record,
            blobURL:state.blobURL,
            blobString: state.blobString,
-           roomId: state.roomId
+           roomId: state.roomId,
+           liveMode: state.liveMode
            //blobObj: state.blobObj
           }
 }
@@ -38,14 +36,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     
       onData = (recordedBlob)=> {
         console.log('chunk of real-time data is:: ', recordedBlob.blobURL);
-        // fetch(recordedBlob)
-        //   .then(res => res.arrayBuffer())
-        //   .then(bufferData => {
-          //console.log(recordedBlob)
-               // real-time 
+        console.log(this.props.liveMode)
+            if(this.props.liveMode == true){
             this.props.sendAudioBuffer(recordedBlob)
-          // }
-          ///*console.log(bufferData)*/) 
+             }        
       }
     
       onStop = (recordedBlob)=> {
@@ -90,14 +84,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           
           })
      }
-     
-     createRoom = () =>{
-      //const roomId = document.getElementById('room-id').value
-      // this.props.saveRoomId(localStorage.userid)
-      // io.emit('create-room', localStorage.userid)
-     }
-      
-     
     
     render(){
         return(

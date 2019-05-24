@@ -6,7 +6,9 @@ const mapStateToProps = state =>{
     return{
         userId: state.userId,
         username: state.username,
-        login:state.login
+        login:state.login,
+        liveMode: state.liveMode,
+        roomId: state.roomId
     }
 }
 
@@ -40,6 +42,7 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
      return(
          <div>
              <h1>Welcome {localStorage.username}</h1>
+             {this.props.liveMode == true? <h3>You are now in livemode, your room number is {this.props.roomId}, invite your friends to join the room!</h3> : null}
              <form onSubmit = {this.handleSubmit}>
                  <input type = "text" placeholder = "Your next song is..."/>
                  <input type = "submit"/>

@@ -41,6 +41,10 @@ const MySongsReducer = (state, action) => {
             return {...state, login: action.login}
         break;
 
+        case 'LIVEMODE':
+            return {...state, liveMode: action.liveMode}
+        break;    
+
         case 'ROOMID':
             return {...state, roomId: action.roomId}
         break;

@@ -25,20 +25,19 @@ app.post ('/login', (req, res) => {
     User.findOne({where: {username: req.body.username}})
     .then(user => {
         let hash = user.password_digest
-        bcrypt.compare(req.body.password, hash, (err, res)=>{
-           if (res == true){
+        bcrypt.compare(req.body.password, hash, (err, result)=>{
+           if (result == true){
              //assign token async and send back user login info to frontend to change login status
                 jwt.sign({user:user}, 'secretkey', (err, token)=>{
-                    io.emit('login', user, token)
+                    res.json({user, token})
                 })         
-           
-           }}
-        )
+           } 
+        })
     })
 })
 
  
-
+ 
 //Routes for data 
 app.get('/users', (req, res) =>{
     User.findAll({
@@ -101,54 +100,58 @@ app.get('/recorded-songs/:id', (req, res)=>{
 
 //setup socket
 
-// for livestream
-const connectedUsers = {}
-const rooms = {} 
+const rooms = {}
 const io = socketIO(server)
 io.on('connection', socket =>{
-    console.log('socket working')
-    // socket.on('comment', messageData => {
-    //     io.sockets.in(`room ${messageData.room}`).emit(messageData)
-    //   //refer to all the sockets connected to the server  
-    //   //io.sockets.emit('comment', messageData)
-    //   console.log(messageData)
-    // })
+    console.log('socket working hi')
+    /////////////////////////////Live Chat////////////////////////
+    socket.on('room', data => {
+       console.log(data)
+       // if a room exist, put them in, if not create one and push the first user in
+            if(rooms[data.roomId] == undefined){
+                rooms[data.roomId] = {
+                    id:data.roomId,
+                    users:[data.user]
+                }
+            }else if(!rooms[data.roomId].users.includes(data.user)){
+               rooms[data.roomId].users.push(data.user)
+            }
+       console.log(rooms)
+       socket.join(data.roomId)
+       io.sockets.in(data.roomId).emit('new user',`${data.user}`)
+    })
+    //// receive new message
+    socket.on('new message', message => {
+        console.log(message)
+        io.sockets.in(message.roomId).emit('broadcast message', {message:message.message, user:message.user})
+    })
 
-//     // real-time audio sending
+   //////////////////////// Live Singing //////////////////////
     socket.on('audioBuffer', audioBuffer => {
-       socket.broadcast.emit('audioBuffer', audioBuffer)
+        console.log(audioBuffer)
+        io.sockets.in(audioBuffer.roomId).emit('new audioBuffer', audioBuffer.bufferData)
+       //socket.broadcast.emit('audioBuffer', audioBuffer)
        //io.sockets
-       console.log(audioBuffer) 
     })
    socket.on('abort',()=>{
        socket.broadcast.emit('abort')
    })
-   // add user in the room for live stream
-   socket.on('roomChat', (obj)=>{
-    //    connectedUsers[socket.id] = obj.roomId
-    //    console.log(connectedUsers)
-    //    console.log(socket.id)
-       socket.join(`room ${obj.roomId}`)
-        rooms[obj.roomId] = {
-            id: obj.roomId,
-            users: [obj.username]
-        }
-        if(!rooms[obj.roomId].users.includes(obj.username)){
-            rooms[obj.roomId].users.push(obj.username)
-        }
-        //console.log(rooms[obj.roomId])
-        console.log(rooms[obj.roomId].users)
-        io.sockets.in(`room ${obj.roomId}`).emit('usersInTheRoom', obj/*rooms[obj.roomId].users*/)
-        //io.sockets.in(`room ${obj.roomId}`).emit('usersComment', rooms[obj.roomId].users)
 
-   })
+ /////////////////////////////Sound Effect////////////////////////
+    socket.on('applause', applause => {
+        console.log(applause)
+        io.sockets.in(applause.roomId).emit('play applause', applause.sound)
+    })
 
-   socket.on('comment', messageData => {
-    io.sockets.in(`room ${messageData.room}`).emit('comment',messageData)
-  //refer to all the sockets connected to the server  
-  //io.sockets.emit('comment', messageData)
-   console.log(messageData)
-   })
+    socket.on('boo', boo => {
+        console.log(boo)
+        io.sockets.in(boo.roomId).emit('play boo', boo.sound)
+    })
+  
+    socket.on('whistle', whistle =>{
+        console.log(whistle)
+        io.sockets.in(whistle.roomId).emit('play whistle', whistle.sound)
+    })
 })
   
 

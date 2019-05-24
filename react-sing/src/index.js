@@ -9,7 +9,7 @@ import ReduxThunk from 'redux-thunk';
 import MySongsReducer from './Reducers/MySongsReducer'
 const middleware = compose(
     applyMiddleware(ReduxThunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
 const initState = {
@@ -24,11 +24,13 @@ const initState = {
     blobURL: "",
     blobString: "",
     roomId:"",
-    usersInTheRoom:[]
+    usersInTheRoom:[],//
+    liveMode: false
     //blobObj: {}
 }
 
 export const store = createStore(MySongsReducer, initState, middleware)
+
 ReactDOM.render(<Provider store = {store}>
                    <App />
                </Provider>, document.getElementById('root'));

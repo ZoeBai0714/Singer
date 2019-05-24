@@ -6,19 +6,19 @@ import SearchBar from './Component/SearchBar'
 import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import LiveStreamSocket from './Component/LiveStreamSocket'
-import Comment from './Component/Comment'
 import socketIO from 'socket.io-client';
 import MySongs from './Component/MySongs'; 
-const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.107:3000/')
+import {io} from './Component/IO'
+//const io = socketIO('localhost:3000/')
+//const io = socketIO('http://10.185.2.248:3000/')
+//window.io = io
 
 const MainPage = (props) => (
   <div>
         <SearchBar songList={props.songList} />
         <SongList songIds={props.songIds} />
-        <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
         <LiveStreamSocket/>
-        <Comment reaction={props.reaction} username={props.username} comment={props.comment}  /*displayComments = {this.displayComments}*/ />
+        <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
         <MySongs />
   </div>
 )
@@ -30,6 +30,7 @@ const mapStateToProps = state =>{
     comment: state.comment,
     login: state.login,
     roomId: state.roomId,
+    liveMode:state.liveMode,
     usersInTheRoom: state.usersInTheRoom
          }
 }
@@ -48,35 +49,13 @@ class App extends React.Component {
     this.props.getSongIds(songIds)
   }  
 
-  reaction = (e) => {
-    e.preventDefault()
-    io.emit('roomChat', {
-      message: e.target.children[2].value,
-      username: e.target.children[0].value,
-      room:this.props.roomId
-    })
-    
-    this.props.getUsername(e.target.children[0].value)
-    this.props.userComment(e.target.children[2].value)
-   
-  }
-
-
   componentDidMount() {
     var sourceBuffer, audioElement, mediaSource
-    io.on('usersInTheRoom', messageData => {
-      console.log(this.props.roomId)
-      //console.log(messageData)
-      console.log(this.props.username)
-      if(this.props.roomId == messageData.room){
-        const commentArea = document.getElementById('output')
-        return commentArea.innerHTML += '<p>' + localStorage.username + ':' + messageData.message + '</p>'
-      }
-    })
-
+    console.log(io)
       const queue = []
 
-        io.on('audioBuffer', (arrayBuffer) => {
+        io.on('new audioBuffer', (arrayBuffer) => {
+          console.log('I am singing live')
           queue.push(arrayBuffer)
           if(!sourceBuffer) sourceOpen()
           else if(queue.length === 1) feedBuffer()
@@ -103,7 +82,7 @@ class App extends React.Component {
             var mediaSource = e.target;
             sourceBuffer = mediaSource.addSourceBuffer(mime);
             sourceBuffer.addEventListener('updateend', feedBuffer)
-            mediaSource.addEventListener('sourceended', e => console.log("HEREELKJS:ELKJLEKJ:IJOPFJPWOFIJEPOIFJWEOPIJ"))        
+            mediaSource.addEventListener('sourceended', e => console.log("HEREELKJS:ELKJLEKJ:IJOPFJPWOFIJEPOIFJWEOPIJ")) // mad josh       
             feedBuffer()          
           });
         }
@@ -114,19 +93,22 @@ class App extends React.Component {
       }
 
       sendAudioBuffer = bufferData => {
-        
-        io.emit('audioBuffer', bufferData)
+        console.log('I am here')
+        console.log(this.props.roomId)
+        io.emit('audioBuffer', {bufferData:bufferData, roomId:this.props.roomId})
       }
 
       
   render() {
-    console.log(this.props.roomId)
+    // console.log(this.props.roomId)
+    // console.log(this.props.username)
+    // console.log(localStorage.username)
     return (
       <BrowserRouter>
          <Route exact path = '/singer' render = {() =>this.props.login == true ? (<Redirect to ='/my-page'/>): (<Home/>) } />
          <Route exact path = '/my-page' render = {() =>this.props.login == true || localStorage.length > 0?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
-          reaction={this.reaction} username={this.props.username} comment={this.props.comment}/>): (<Home/>)
+          username={this.props.username} comment={this.props.comment}/>): (<Home/>)
           }/>
       </BrowserRouter>
     )

@@ -1,17 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
-const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.107:3000/')
-const serverURL = 'http://localhost:3000'
-//const serverURL = 'http://10.185.6.107:3000'
+// const serverURL = 'http://localhost:3000'
+const serverURL = 'http://10.185.6.189:3000'
 
 
 const mapStateToProps = state =>{
     return {
               userId: state.userId,
               username: state.username,
-              password: state.password,
+              //password: state.password,
               login: state.login
            }
 }
@@ -19,33 +17,19 @@ const mapStateToProps = state =>{
 const mapDispatchToProps = {
     getUserId: (id) => ({type: "USERID", userId:id}),
     getUsername: (username) => ({type: 'USERNAME', username:username}),
-    getPassword: (password) => ({type: 'PASSWORD', password:password}),
+    //getPassword: (password) => ({type: 'PASSWORD', password:password}),
     loginStatus: (status) => ({type: 'LOGIN', login:status})
 }
 
 
  
 export default connect (mapStateToProps, mapDispatchToProps) (class Home extends React.Component {
-    componentDidMount(){
-        io.on('login', (user, token) => {
-            this.props.loginStatus(true)
-            this.props.getUserId(user.id)
-            localStorage.setItem('username', user.username)
-            localStorage.setItem('userid', user.id)
-            localStorage.setItem('token', token)
-            console.log(localStorage)
-        })
-
-     }
-
-
+   
     login = (e) =>{
         e.preventDefault()
         let username = e.target.children[1].value
         let password = e.target.children[4].value
-        this.props.getUsername(username) // not in use, comment out later?
-        this.props.getPassword(password) // not in use, comment out later?
-            fetch(`${serverURL}/login`, {
+        fetch(`${serverURL}/login`, {
                 method: "POST",
                 headers:{
                     'Content-Type': 'application/json',
@@ -55,8 +39,15 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
                     username: username,
                     password: password
                 })
-               }) 
-        
+            })
+          .then(res => res.json())
+          .then(data => {
+                localStorage.setItem('username', data.user.username)
+                localStorage.setItem('userid', data.user.id)
+                localStorage.setItem('token', data.token)
+                this.props.loginStatus(true)
+                console.log(localStorage)
+          })
     }
 
 
@@ -77,9 +68,9 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
 
     
     render(){
-        console.log(this.props.userId)
         return(
             <div>
+              <h1>Singer</h1>
                 <form onSubmit = {this.login}>
                     <label/>Username
                     <input id = "username" type = "text" name = "username"/><br/>

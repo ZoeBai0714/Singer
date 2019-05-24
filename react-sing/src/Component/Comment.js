@@ -1,21 +1,69 @@
 import React from 'react';
+import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
-const io = socketIO('localhost:3000/')
-//const io = socketIO('http://10.185.6.107:3000/')
+import {io} from './IO'
+//const io = socketIO('http://10.185.2.248:3000/')
 
-export default class Comment extends React.Component{
+window.io = io
+
+const mapStateToProps = state =>{
+    return{
+        username: state.username,
+        roomId: state.roomId,
+        liveMode: state.liveMode
+    }
+}
+
+const mapDispatchToProps = {
+    getUsername: (username) => ({type: 'USERNAME', username:username})
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+class Comment extends React.Component{
+
+    componentDidMount(){
+       
+          io.on('connection', (socket) =>{
+           //////////////////////////Live Chat////////////////////
+          })
+          // receive new uer join info
+          io.on('new user', who => {
+              console.log(`${who} has joined the room`)
+           })
+
+          // receive incoming messages
+          io.on('broadcast message', message=>{
+              console.log(message);
+              console.log(localStorage)
+              const commentArea = document.getElementById('output')
+              return commentArea.innerHTML +=` <p>${message.user}: ${message.message}</p>`
+            })
+       
+    }
+
+    sendMessage = (e) =>{
+       e.preventDefault()
+       const name = localStorage.username
+       const message = e.target.children[0].value
+       const roomId = this.props.roomId
+            io.emit('new message', {roomId: roomId, message: message, user:name})
+    }
+
   render(){
       return(
           <div>
-              <form onSubmit = {this.props.reaction}>
-              <input id = "handle" type = "text" placeholder = "Username"></input><br/>
-              <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
-              <button>Send</button>
-              </form>
-              <div id = "output"></div>
+             
+                <h3>Chat</h3>
+                <form onSubmit = {this.sendMessage}>
+                <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
+                <button>Send</button>
+                </form>
+                <div id = "output"></div>
+              
           </div>
       )
   }
 }
+)
 
 //{this.props.comment.length > 0 ? this.props.displayComments() : null}
