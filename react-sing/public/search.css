@@ -1,0 +1,13 @@
+#search{
+    overflow-y: scroll;
+    height: 400px;
+    width:720px;
+    margin-left: 23%;
+    margin-top: 2%;
+    /* border: solid gray 1px; */
+    -webkit-transition: box-shadow linear 1s;
+}
+
+#search:hover{
+    box-shadow: 0 0 20px palevioletred;
+}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
-// const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.6.189:3000'
+//const serverURL = 'http://localhost:3000'
+const serverURL = 'http://10.124.179.242:3000'
 
 const mapStateToProps = state =>{
   return  { 
@@ -87,7 +87,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     
     render(){
         return(
-           <div>
+           <div style = {{marginLeft:"25%"}}>
            <ReactMic record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
             strokeColor="#000000" backgroundColor="#FF4081" nonstop={true} duration={5} />
             <button onClick={this.startRecording} type="button">Start</button>

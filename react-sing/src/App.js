@@ -6,7 +6,6 @@ import SearchBar from './Component/SearchBar'
 import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
 import LiveStreamSocket from './Component/LiveStreamSocket'
-import socketIO from 'socket.io-client';
 import MySongs from './Component/MySongs'; 
 import {io} from './Component/IO'
 //const io = socketIO('localhost:3000/')
@@ -14,9 +13,8 @@ import {io} from './Component/IO'
 //window.io = io
 
 const MainPage = (props) => (
-  <div>
+  <div style = {{zIndex:1}}>
         <SearchBar songList={props.songList} />
-        <SongList songIds={props.songIds} />
         <LiveStreamSocket/>
         <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
         <MySongs />

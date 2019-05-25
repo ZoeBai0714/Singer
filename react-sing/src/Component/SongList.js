@@ -5,8 +5,8 @@ export default class SongList extends React.Component{
 
     render(){
         return(
-            <div>
-                {this.props.songIds.map(id => <iframe style = {{width: "500px", height: "500px"}} src = {`https://www.youtube.com/embed/${id}`}></iframe>)}
+            <div id = "search" >
+                {this.props.songIds.map(id => <iframe style = {{width: "700px", height: "400px"}} src = {`https://www.youtube.com/embed/${id}`}></iframe>)}
             </div>
         )
     }

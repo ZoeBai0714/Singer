@@ -1,9 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-
+import SongList from './SongList'
 const mapStateToProps = state =>{
     return{
+        songIds:state.songIds,
         userId: state.userId,
         username: state.username,
         login:state.login,
@@ -40,14 +41,15 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
 
  render(){
      return(
-         <div>
-             <h1>Welcome {localStorage.username}</h1>
+         <div >
+             <span style = {{fontSize:'50px', fontStyle: 'bold'}}>Welcome {localStorage.username}</span>
+             <Link to= '/singer' style = {{textDecoration: 'none', marginLeft:'70%', marginTop:'2%', position:'absolute'}}>Logout</Link>
              {this.props.liveMode == true? <h3>You are now in livemode, your room number is {this.props.roomId}, invite your friends to join the room!</h3> : null}
-             <form onSubmit = {this.handleSubmit}>
-                 <input type = "text" placeholder = "Your next song is..."/>
-                 <input type = "submit"/>
+             <form onSubmit = {this.handleSubmit} style = {{marginLeft:'30%', marginTop:"5%"}}>
+                 <input type = "text" placeholder = "Your next song is..." style = {{width:'450px',fontSize:'25px'}}/>
+                 <button type = "submit" style = {{fontSize:'25px',borderRadius:'5px'}}>Go</button> 
              </form>
-         <button onClick = {this.logout}><Link to= '/singer' style = {{textDecoration: 'none'}}>Logout</Link></button>
+             {this.props.songIds.length > 0? <SongList songIds={this.props.songIds} />:null}
          </div>
      )
  }

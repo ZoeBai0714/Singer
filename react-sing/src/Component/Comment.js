@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import socketIO from 'socket.io-client';
 import {io} from './IO'
 //const io = socketIO('http://10.185.2.248:3000/')
 

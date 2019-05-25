@@ -1,8 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
-// const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.6.189:3000'
+import coverpage from '../assets/coverpage.mp4'
+//const serverURL = 'http://localhost:3000'
+const serverURL = 'http://10.124.179.242:3000'
 
 
 const mapStateToProps = state =>{
@@ -27,8 +28,9 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
    
     login = (e) =>{
         e.preventDefault()
-        let username = e.target.children[1].value
-        let password = e.target.children[4].value
+        console.log(e.target.children[1])
+        let username = e.target.children[0].children[1].value
+        let password = e.target.children[1].children[1].value
         fetch(`${serverURL}/login`, {
                 method: "POST",
                 headers:{
@@ -69,16 +71,29 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
     
     render(){
         return(
-            <div>
-              <h1>Singer</h1>
-                <form onSubmit = {this.login}>
-                    <label/>Username
-                    <input id = "username" type = "text" name = "username"/><br/>
-                    <label/>Password
-                    <input id = "password" type="password" name = "password"/><br/>
-                    <button type = "submit" name = "login">Login</button>
-                </form>
-                <button name = "signup" onClick = {this.signup}>Sign up</button> 
+            <div >
+               <div class = 'section'>
+                    <div class = 'video-container'>
+                        <video autoPlay loop muted>
+                            <source src = {coverpage} type = "video/mp4"/>
+                        </video> 
+                    </div>
+                      <h1 class = "glow">Singer</h1>
+                      <form onSubmit = {this.login}>
+                      <div class="input-container">
+                        <i class="fa fa-user icon"></i>
+                        <input class = "input-field" id = "username" type = "text" name = "username" placeholder = "username"/><br/>
+                      </div>
+
+                      <div class="input-container">
+                        <i class="fa fa-key icon"></i>
+                        <input id = "password" type="password" name = "password" placeholder = "password"/><br/><br/><br/>
+                      </div>  
+                        <button type = "submit" name = "login">Login</button>
+                        <button name = "signup" onClick = {this.signup}>Sign up</button> 
+                      </form>
+                   
+               </div>
             </div>
         )
     }
