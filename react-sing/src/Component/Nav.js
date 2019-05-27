@@ -10,13 +10,15 @@ const mapStateToProps = state =>{
          mySongs: state.mySongs,
          liveMode: state.liveMode,
          roomId: state.roomId,
+         comment: state.comment
          }
 }
  
 const mapDispatchToProps = {
     fetchSongs: (userSongs)=> ({type: 'USER_SONGS', mySongs:userSongs}),
     changeLiveMode: (mode) => ({type: 'LIVEMODE', liveMode: mode}),
-    saveRoomId: (roomId) => ({type: 'ROOMID', roomId:roomId})
+    saveRoomId: (roomId) => ({type: 'ROOMID', roomId:roomId}),
+    clearComment: ()=>({type:'CLEARCOMMENT', comment:[]})
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
 
@@ -26,6 +28,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             if(this.props.liveMode == true){
               alert(`You are now leaving live room ${this.props.roomId}`)  
               this.props.changeLiveMode(false)
+              this.props.clearComment()
             }
             const mySongs = document.getElementById('song-list')
             //1.scroll up/down the window
@@ -79,6 +82,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             alert(`You are leaving live room ${this.props.roomId}`)
             this.props.changeLiveMode(false)
             this.props.saveRoomId("")
+            this.props.clearComment()
             roomId = null
             io.disconnect()
             io = null
@@ -123,7 +127,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         }
         
         render(){
-            console.log(this.props.liveMode)
+            console.log(this.props.comment)
             return(
                 <div class = "main-page">
                     <button class = 'half-round-btn left my-songs' onClick = {this.fetchUserId}>Songs</button>

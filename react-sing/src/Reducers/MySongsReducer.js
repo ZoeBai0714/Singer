@@ -53,10 +53,12 @@ const MySongsReducer = (state, action) => {
             return {...state, usersInTheRoom: action.usersInTheRoom}
         break;
         
-        case 'COMMENT':
-            const comments = state.comment
-            
+        case 'COMMENT':            
             return {...state, comment: state.comment.concat(action.comment)}
+        break;
+
+        case 'CLEARCOMMENT':            
+            return {...state, comment: []}
         break;
         
         case 'TIMESTAMP':

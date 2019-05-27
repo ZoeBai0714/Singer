@@ -40,6 +40,7 @@ class Comment extends React.Component{
 
     componentWillUnmount(){
         io.off('broadcast message', this.props.saveComment)
+        io.off('new user')
     }
 
 
