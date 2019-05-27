@@ -1,8 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import Comment from './Comment';
-import SoundEffect from './SoundEffect'
-import {io} from './IO'
+
 
 const mapStateToProps = state =>{
     return{

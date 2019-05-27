@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, Icon, Image } from 'semantic-ui-react'
 import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
 //const serverURL = 'http://localhost:3000'
@@ -77,7 +76,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
      onSave = e =>{
        e.preventDefault();
        const songName = prompt('Please enter your song name:')
-        if(songName !=="" && this.props.blobString !== ""){
+        if(songName !== "" && this.props.blobString !== ""){
           // save this into database by fetch post method
             fetch(`${serverURL}/recorded-songs`, {
               method: "POST",
@@ -93,14 +92,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               })
             
             })
+        }else if(songName == ""){
+           alert('Song name can not be empty!')
         }  
+
+        console.log(songName)
      }
     
     render(){
         return(
             <div class = "main-page" style = {{marginLeft:"23%"}}>
-            <button id = "triangle" style ={{position:'fixed',background:'transparent'}} onClick={this.startRecording} type="button">Record</button><br/>
-            <button id = "round" style ={{position:'fixed'}} onClick={this.stopRecording} type="button">Stop</button><br/>
+            <button id = "triangle" style ={{background:'transparent'}} onClick={this.startRecording} type="button"></button><br/>
+            <button id = "round"  onClick={this.stopRecording} type="button">Stop</button><br/>
             <ReactMic style ={{position:'absolute'}} record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
               strokeColor="#000000" backgroundColor="white" nonstop={true} duration={5}/>
               {/* <button id = "round" style ={{position:'fixed'}} onClick={this.stopRecording} type="button">Stop</button><br/> */}

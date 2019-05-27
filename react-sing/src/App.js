@@ -19,7 +19,7 @@ const URL = 'http://10.185.1.196:3001'
 const MainPage = (props) => (
   <div>
      <img id="background" src = {background}/>
-     <span style = {{textDecoration: 'none',position:'absolute',display:'flex',fontSize:'50px', fontFamily: 'Arial ',fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
+     <span style = {{textDecoration: 'none',position:'absolute',display:'flex',fontSize:'25px', fontFamily: 'Arial ',fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
      <Link to= '/singer' style = {{fontColor:'white',fontSize:'25px',textDecoration: 'none', marginLeft:'90%', marginTop:'5%'}} onClick = {props.logout}>Logout</Link>
         <Nav />
         <LiveStreamSocket/>

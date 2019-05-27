@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
 import SongList from './SongList'
 const mapStateToProps = state =>{
     return{
@@ -26,11 +25,29 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
         fetch(URL)
         .then((res) => res.json())
         .then(songData => {
+            console.log('you reached me')
             let songIds = songData.items.map(song => song.id.videoId)
             songIds = songIds.filter(id => id !== undefined)
-            //pass videoIds to parent for <SongList>
-             this.props.songList(songIds)
+            if(songIds.length == 0){
+               this.noSongs()
+            }else if(songIds.length > 0){
+                const noSongs = document.querySelector('.no-songs')
+                if(noSongs){
+                    noSongs.remove()
+                }
+                 //pass videoIds to parent for <SongList>
+                 this.props.songList(songIds)
+            }
+           
         }) 
+    }
+
+    noSongs = () =>{
+         const h3 = document.createElement('h3')
+         h3.className = "no-songs"
+         const searchBar = document.getElementsByTagName('form')
+         h3.innerHTML = "Sorry, we don't have this song yet"
+         searchBar[0].appendChild(h3)
     }
  
     // logout = () => {

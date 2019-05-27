@@ -1,5 +1,6 @@
 #triangle{
     /* display:'flex'; */
+    position: absolute;
     width: 0;
 	height: 0;
 	border-top: 20px solid transparent;
@@ -12,6 +13,7 @@
 }
 
 #round{
+    position: absolute;
     height: 50px;
     width: 50px;
     background-color: white;
