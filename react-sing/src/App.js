@@ -12,14 +12,15 @@ import LiveStreamSocket from './Component/LiveStreamSocket'
 import Nav from './Component/Nav'; 
 import {io} from './Component/IO'
 import background from './assets/background2.jpg'
+const URL = 'http://10.185.1.196:3001'
 //const io = socketIO('localhost:3000/')
 //const io = socketIO('http://10.185.2.248:3000/')
 //window.io = io
 const MainPage = (props) => (
   <div>
      <img id="background" src = {background}/>
-     <span style = {{display:'flex',fontSize:'50px', fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
-     <Link to= '/singer' style = {{position:'abolute',textDecoration: 'none', marginLeft:'70%', marginTop:'2%', position:'absolute'}} onClick = {props.logout}>Logout</Link>
+     <span style = {{textDecoration: 'none',position:'absolute',display:'flex',fontSize:'50px', fontFamily: 'Arial ',fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
+     <Link to= '/singer' style = {{fontColor:'white',fontSize:'25px',textDecoration: 'none', marginLeft:'90%', marginTop:'5%'}} onClick = {props.logout}>Logout</Link>
         <Nav />
         <LiveStreamSocket/>
         <SearchBar songList={props.songList} />
@@ -129,12 +130,12 @@ class App extends React.Component {
       }
       
   render() {
-    // console.log(this.props.startedTimestamp)
+    console.log(localStorage)
 
     return (
       <BrowserRouter>
-         <Route exact path = '/singer' render = {() =>this.props.login == true ? (<Redirect to ='/my-page'/>): (<Home/>) } />
-         <Route exact path = '/my-page' render = {() =>this.props.login == true || localStorage.length > 0?(<MainPage
+         <Route exact path = '/singer' render = {() =>this.props.login == true && localStorage.token.length > 0? (<Redirect to = '/my-page'/>): (<Home/>) } />
+         <Route exact path = '/my-page' render = {() => localStorage.token.length > 0?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
           username={this.props.username} comment={this.props.comment} mySongs = {this.props.mySongs} logout = {this.logout} 
           liveMode = {this.props.liveMode} roomId = {this.props.roomId}/>): (<Home/>)

@@ -2,7 +2,21 @@
     position:'fixed';
     margin-left: 25%;
     border-style: solid;
+    border-radius: 5px;
+    /* border-width: 1px; */
+    border-color:transparent;
     margin-top:1%;
-    width:50%;
-    text-align: center
+    width: 710px;
+    height: 50vh;
+    text-align: center;
+    overflow-y: scroll;
+    overflow: hidden;
+    -webkit-transition: border-color linear 1s;
+}
+
+#output:hover{
+    border-color: white;
+    border-width: 1px;
+    overflow: scroll;
+    scrollbar-width: thin
 }

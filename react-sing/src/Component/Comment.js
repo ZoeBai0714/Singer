@@ -32,7 +32,9 @@ class Comment extends React.Component{
            })
 
           // receive incoming messages
-          io.on('broadcast message', message => {this.props.saveComment(message.message)
+          io.on('broadcast message', message => {this.props.saveComment(message)
+          const chatRoom = document.getElementById('output')
+          chatRoom.scrollTop = chatRoom.scrollHeight - chatRoom.clientHeight
           this.props.getUsername(message.user)
         })
        
@@ -61,7 +63,7 @@ class Comment extends React.Component{
                 <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
                 <button>Send</button>
                 </form>
-                <div id = "output">{this.props.comment.map(message => <p>{this.props.username}: {message}</p>)}</div>
+                <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div>
           </div>
       )
   }

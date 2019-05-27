@@ -99,10 +99,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     render(){
         return(
             <div class = "main-page" style = {{marginLeft:"23%"}}>
-            <button id = "triangle" style ={{position:'absolute',background:'transparent'}} onClick={this.startRecording} type="button">Record</button><br/>
-            <ReactMic record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
+            <button id = "triangle" style ={{position:'fixed',background:'transparent'}} onClick={this.startRecording} type="button">Record</button><br/>
+            <button id = "round" style ={{position:'fixed'}} onClick={this.stopRecording} type="button">Stop</button><br/>
+            <ReactMic style ={{position:'absolute'}} record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
               strokeColor="#000000" backgroundColor="white" nonstop={true} duration={5}/>
-              <button id = "round" style ={{position:'absolute'}} onClick={this.stopRecording} type="button">Stop</button><br/>
+              {/* <button id = "round" style ={{position:'fixed'}} onClick={this.stopRecording} type="button">Stop</button><br/> */}
               <form id = "save-form" onSubmit = {this.onSave} action ="/recorded-songs" method = "POST" >
                 {/* <label>Save your song</label><br/> */}
                 {/* <label for = "song-name">Song name:</label> */}

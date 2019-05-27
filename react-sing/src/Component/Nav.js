@@ -88,40 +88,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             io = null
             console.log(localStorage.username + ' left the room')
          }            
-            // if(this.props.liveMode == false){
-            //     const roomId = prompt('Please enter a room number you would like to join:')
-            //     if(roomId == ""){            
-            //         alert('room number cannot be empty!')
-            //         // this.props.changeLiveMode(false)
-            //     }else{
-            //         this.props.saveRoomId(roomId)
-            //         this.props.changeLiveMode(true/*!this.props.liveMode*/)
-            //         io.emit('room', {roomId: roomId, user:localStorage.username})
-            //         const mySongs = document.getElementById('song-list')
-            //         if(mySongs.className.includes('active')){
-            //             mySongs.className = ''  
-            //         } 
-
-            //         // io.emit('room', {roomId: roomId, user:localStorage.username})
-            //     }
-            // }else if(this.props.liveMode == true){
-            //     alert(`You are leaving live room ${this.props.roomId}`)
-            //     console.log(`${localStorage.username} left the room`)
-            //     this.props.changeLiveMode(false)
-            // }
             
-
-
-            // 1. close mysongs if open
-            // const mySongs = document.getElementById('song-list')
-            // mySongs.className = ''  
-
-            // 2. scroll up/ down the window
-            // if(this.props.liveMode == true){
-            //     window.scrollBy(0, 150)
-            // }else{
-            //     window.scrollBy(0,-150)
-            // }
 
           
         }
