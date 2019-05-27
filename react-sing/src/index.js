@@ -25,7 +25,8 @@ const initState = {
     blobString: "",
     roomId:"",
     usersInTheRoom:[],//
-    liveMode: false
+    liveMode: false,
+    startedTimestamp:""
     //blobObj: {}
 }
 

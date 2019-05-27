@@ -1,42 +1,55 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import Home from './Containers/Home'
 import SearchBar from './Component/SearchBar'
-import SongList from './Component/SongList'
 import Recorder from './Component/Recorder'
+import MySongs from './Component/MySongs'
+import Comment from './Component/Comment'
+import SoundEffect from './Component/SoundEffect'
 import LiveStreamSocket from './Component/LiveStreamSocket'
-import MySongs from './Component/MySongs'; 
+import Nav from './Component/Nav'; 
 import {io} from './Component/IO'
+import background from './assets/background2.jpg'
 //const io = socketIO('localhost:3000/')
 //const io = socketIO('http://10.185.2.248:3000/')
 //window.io = io
-
 const MainPage = (props) => (
-  <div style = {{zIndex:1}}>
-        <SearchBar songList={props.songList} />
+  <div>
+     <img id="background" src = {background}/>
+     <span style = {{display:'flex',fontSize:'50px', fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
+     <Link to= '/singer' style = {{position:'abolute',textDecoration: 'none', marginLeft:'70%', marginTop:'2%', position:'absolute'}} onClick = {props.logout}>Logout</Link>
+        <Nav />
         <LiveStreamSocket/>
-        <Recorder sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
-        <MySongs />
+        <SearchBar songList={props.songList} />
+        <Recorder  sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
+        <MySongs/>
+        {props.liveMode == true?  <h3 style = {{textAlign:'center', fontStyle:"italic"}}>You are now in livemode, your room number is {props.roomId}, invite your friends to join your live!</h3> : null}  
+        {props.liveMode == true?  <SoundEffect /> : null} 
+        {props.liveMode == true?  <Comment /* reaction={this.props.reaction} username={this.props.username} comment={this.props.comment}*/ /> : null}
   </div>
-)
+) 
   
 const mapStateToProps = state =>{
   return {
     songIds: state.songIds, 
+    mySongs:state.mySongs,
     username: state.username,
     comment: state.comment,
     login: state.login,
     roomId: state.roomId,
     liveMode:state.liveMode,
-    usersInTheRoom: state.usersInTheRoom
+    usersInTheRoom: state.usersInTheRoom,
+    startedTimestamp:state.startedTimestamp
          }
 }
 
 const mapDispatchToProps = {
   getSongIds: (songIds) => ({type: 'SONGIDS', songIds: songIds}),
   getUsername: (username) => ({type: 'USERNAME', username:username}),
-  userComment: (comment) => ({type: 'COMMENT', comment:comment})
+  userComment: (comment) => ({type: 'COMMENT', comment:comment}),
+  loginStatus: (status) => ({type: 'LOGIN', login:status})
 }
 
 export default connect (mapStateToProps, mapDispatchToProps )(
@@ -52,10 +65,11 @@ class App extends React.Component {
     console.log(io)
       const queue = []
 
-        io.on('new audioBuffer', (arrayBuffer) => {
+        io.on('new audioBuffer', (data) => {
           console.log('I am singing live')
-          queue.push(arrayBuffer)
-          if(!sourceBuffer) sourceOpen()
+          console.log(data)
+          queue.push(data.arrayBuffer)
+          if(!sourceBuffer) sourceOpen(data.timetamp)
           else if(queue.length === 1) feedBuffer()
         })
 
@@ -69,7 +83,7 @@ class App extends React.Component {
         })
 
 
-        function sourceOpen(){ 
+        function sourceOpen(timestamp = false){ 
           audioElement = document.createElement('audio');
           mediaSource = new MediaSource();
           audioElement.src = URL.createObjectURL(mediaSource);
@@ -79,8 +93,12 @@ class App extends React.Component {
             var mime = "audio/webm;codecs=opus";
             var mediaSource = e.target;
             sourceBuffer = mediaSource.addSourceBuffer(mime);
+            if(timestamp) sourceBuffer.timestampOffset = timestamp
             sourceBuffer.addEventListener('updateend', feedBuffer)
-            mediaSource.addEventListener('sourceended', e => console.log("HEREELKJS:ELKJLEKJ:IJOPFJPWOFIJEPOIFJWEOPIJ")) // mad josh       
+            mediaSource.addEventListener('sourceended', e => {
+              console.log('here@')
+              sourceBuffer = null
+            }) // mad josh       
             feedBuffer()          
           });
         }
@@ -93,20 +111,33 @@ class App extends React.Component {
       sendAudioBuffer = bufferData => {
         console.log('I am here')
         console.log(this.props.roomId)
-        io.emit('audioBuffer', {bufferData:bufferData, roomId:this.props.roomId})
-      }
+        console.log(MediaSource.readyState)
+        //create timestamp for started
 
+        //create timestamp for now
+        const date = new Date()
+        const now = (date.getTime() % 6000/1000)//.toFixed(0)
+        console.log(now)
+        console.log(this.props.startedTimestamp)
+        io.emit('audioBuffer', {bufferData:{ arrayBuffer: bufferData, timstamp: now - this.props.startedTimestamp}, roomId:this.props.roomId})
+      }
+      
+      logout = () =>{
+        console.log('you reached me')
+        this.props.loginStatus(false)
+        localStorage.clear()
+      }
       
   render() {
-    // console.log(this.props.roomId)
-    // console.log(this.props.username)
-    // console.log(localStorage.username)
+    // console.log(this.props.startedTimestamp)
+
     return (
       <BrowserRouter>
          <Route exact path = '/singer' render = {() =>this.props.login == true ? (<Redirect to ='/my-page'/>): (<Home/>) } />
          <Route exact path = '/my-page' render = {() =>this.props.login == true || localStorage.length > 0?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
-          username={this.props.username} comment={this.props.comment}/>): (<Home/>)
+          username={this.props.username} comment={this.props.comment} mySongs = {this.props.mySongs} logout = {this.logout} 
+          liveMode = {this.props.liveMode} roomId = {this.props.roomId}/>): (<Home/>)
           }/>
       </BrowserRouter>
     )

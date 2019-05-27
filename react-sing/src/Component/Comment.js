@@ -50,15 +50,13 @@ class Comment extends React.Component{
 
   render(){
       return(
-          <div>
-             
-                <h3>Chat</h3>
+          <div class = "live">
+                <h3 style = {{fontStyle:'italic'}}>Chat with your friends and react to the live!</h3>
                 <form onSubmit = {this.sendMessage}>
                 <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
                 <button>Send</button>
                 </form>
                 <div id = "output"></div>
-              
           </div>
       )
   }

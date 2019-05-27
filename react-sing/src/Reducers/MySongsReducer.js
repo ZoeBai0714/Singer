@@ -55,6 +55,10 @@ const MySongsReducer = (state, action) => {
         
         case 'COMMENT':
             return {...state, comment: action.comment}
+        break;
+        
+        case 'TIMESTAMP':
+            return {...state, startedTimestamp: action.startedTimestamp}
         break;    
     } 
    return state

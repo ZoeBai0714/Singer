@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 import coverpage from '../assets/coverpage.mp4'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.124.179.242:3000'
+const serverURL = 'http://10.185.1.196:3000'
 
 
 const mapStateToProps = state =>{

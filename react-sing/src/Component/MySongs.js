@@ -1,8 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { store } from '../index.js';
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.2.248:3000'
+const serverURL = 'http://10.185.1.196:3000'
 
 const mapStateToProps = state =>{
      return { 
@@ -12,52 +11,27 @@ const mapStateToProps = state =>{
 }
  
 const mapDispatchToProps = {
-           fetchSongs: (id) => {
-            return dispatch =>{    
-                fetch(`${serverURL}/users/${localStorage.userid}/recorded-songs`)
-                .then(res => res.json())
-                .then(userSongs =>{ 
-                    dispatch ({type: 'USER_SONGS', mySongs:userSongs})
-                })
-        }
-    }
+    fetchSongs: (userSongs)=> ({type: 'USER_SONGS', mySongs:userSongs})
  
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
 
    class MySongs extends React.Component {
 
-        fetchUserId = () => {
-            this.props.fetchSongs(this.props.userId)
-        }
-
-        render(){
-            return(
-                <div>
-                    <button style = {{fontSize:'20px'}} onClick = {this.fetchUserId}>My songs</button>
-                    <ul>
+       render(){
+           return(
+               <div>
+                   <ul id = "song-list">
+                       <h1>My Songs</h1>
                         {this.props.mySongs.map(song => 
-                        <li>
+                        <li style = {{marginRight:'1%'}}>{song.name}
                             <audio controls>
                                 <source src = {`data:audio/webm;codecs=opus;base64,${song.blobURL}`}/>
                             </audio>
-                            </li>)}
-                    </ul>
-                </div>
-            )
-        }
+                        </li>)}
+                  </ul>
+               </div>
+           )
+       }
    }
 )
-
-// export a named class
-
-/*
-   <ul>
-                   {this.props.mySongs.map(song => 
-                   <li>
-                       <audio controls>
-                           <source src = {`data:audio/webm;codecs=opus;base64,${song.blobURL}`}/>
-                       </audio>
-                    </li>)}
-               </ul>
-*/

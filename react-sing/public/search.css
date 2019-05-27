@@ -1,13 +1,25 @@
 #search{
     overflow-y: scroll;
     height: 400px;
-    width:720px;
+    width:710px;
     margin-left: 23%;
-    margin-top: 2%;
-    /* border: solid gray 1px; */
+    margin-top: 1%;
+    border: solid gray 1px;
+    border-radius: 5px;
     -webkit-transition: box-shadow linear 1s;
+    /* animation: search 1s ease-in-out infinite alternate ; */
+
 }
 
 #search:hover{
-    box-shadow: 0 0 20px palevioletred;
-}
+    box-shadow: 0 0 20px white, 0 0 30px #fff, 0 0 40px white, 0 0 50px white, 0 0 60px 
+} 
+/* 
+@-webkit-keyframes search {
+    from{
+        box-shadow: none
+    }
+    to {
+      box-shadow: 0 0 10px #fff, 0 0 20px white, 0 0 30px white, 0 0 30px white, 0 0 30px white, 0 0 30px white, 0 0 30px white;
+    }
+  } */

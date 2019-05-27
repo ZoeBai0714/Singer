@@ -20,7 +20,7 @@ const mapDispatchToProps = {
 export default connect (mapStateToProps, mapDispatchToProps)(class Main extends React.Component{
     handleSubmit = (e) =>{
         e.preventDefault()
-        let query = (e.target.children[0].value).toLowerCase()
+        let query = (e.target.children[1].value).toLowerCase()
         console.log(query)
         const URL =`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCQHthJbbEt6osR39NsST13g&q=${query}&key=AIzaSyBlG_6DX-JMovaElRRI4KqXl_k0KAyHH_0`
         fetch(URL)
@@ -32,25 +32,23 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
              this.props.songList(songIds)
         }) 
     }
-
-    logout = () => {
-      this.props.loginStatus(false)
-      localStorage.clear()
-      console.log(this.props.login)
-    }
+ 
+    // logout = () => {
+    //   this.props.loginStatus(false)
+    //   localStorage.clear()
+    //   console.log(this.props.login)
+    // }
 
  render(){
      return(
-         <div >
-             <span style = {{fontSize:'50px', fontStyle: 'bold'}}>Welcome {localStorage.username}</span>
-             <Link to= '/singer' style = {{textDecoration: 'none', marginLeft:'70%', marginTop:'2%', position:'absolute'}}>Logout</Link>
-             {this.props.liveMode == true? <h3>You are now in livemode, your room number is {this.props.roomId}, invite your friends to join the room!</h3> : null}
-             <form onSubmit = {this.handleSubmit} style = {{marginLeft:'30%', marginTop:"5%"}}>
-                 <input type = "text" placeholder = "Your next song is..." style = {{width:'450px',fontSize:'25px'}}/>
-                 <button type = "submit" style = {{fontSize:'25px',borderRadius:'5px'}}>Go</button> 
-             </form>
+         <div>
+             {/* <Link to= '/singer' style = {{position:'abolute',textDecoration: 'none', marginLeft:'70%', marginTop:'2%', position:'absolute'}}>Logout</Link> */}
+             <form onSubmit = {this.handleSubmit} style = {{marginLeft:'23%', marginTop:"5%"}}>
+                 <button type = "submit" style = {{fontSize:'25px', opacity:'0.3', borderRadius:'5px', position:'absolute', marginLeft:'46%'}}>Go</button>
+                 <input type = "text" placeholder = "Your next song is..." style = {{display:"flex",width:'655px',borderRadius:'5px', fontSize:'25px', opacity:'0.3'}}/>
+             </form><br/>
              {this.props.songIds.length > 0? <SongList songIds={this.props.songIds} />:null}
-         </div>
+        </div>
      )
  }
 }
