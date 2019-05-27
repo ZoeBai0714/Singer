@@ -81,7 +81,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             this.props.saveRoomId("")
             roomId = null
             io.disconnect()
-            // io = null
+            io = null
             console.log(localStorage.username + ' left the room')
          }            
             // if(this.props.liveMode == false){

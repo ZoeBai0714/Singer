@@ -115,6 +115,7 @@ io.on('connection', socket =>{
                 }
             }else if(!rooms[data.roomId].users.includes(data.user)){
                rooms[data.roomId].users.push(data.user)
+               console.log( rooms[data.roomId].users)
             }
        console.log(rooms)
        socket.join(data.roomId)

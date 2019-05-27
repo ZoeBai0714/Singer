@@ -18,7 +18,7 @@ const initState = {
     username: "",//
     password:"",//
     login:false,
-    comment: "", 
+    comment: [], 
     mySongs: [],
     record: false,
     blobURL: "",

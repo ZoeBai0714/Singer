@@ -1,0 +1,7 @@
+#output{
+    position:'fixed';
+    margin-left: 25%;
+    border-style: solid;
+    width:50%;
+    text-align: center
+}

@@ -9,19 +9,20 @@ const mapStateToProps = state =>{
     return{
         username: state.username,
         roomId: state.roomId,
-        liveMode: state.liveMode
+        liveMode: state.liveMode,
+        comment: state.comment
     }
 }
 
 const mapDispatchToProps = {
-    getUsername: (username) => ({type: 'USERNAME', username:username})
+    getUsername: (username) => ({type: 'USERNAME', username:username}),
+    saveComment: (message)=>({type:'COMMENT', comment:message})
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
 class Comment extends React.Component{
 
     componentDidMount(){
-       
           io.on('connection', (socket) =>{
            //////////////////////////Live Chat////////////////////
           })
@@ -31,14 +32,16 @@ class Comment extends React.Component{
            })
 
           // receive incoming messages
-          io.on('broadcast message', message=>{
-              console.log(message);
-              console.log(localStorage)
-              const commentArea = document.getElementById('output')
-              return commentArea.innerHTML +=` <p>${message.user}: ${message.message}</p>`
-            })
+          io.on('broadcast message', message => {this.props.saveComment(message.message)
+          this.props.getUsername(message.user)
+        })
        
     }
+
+    componentWillUnmount(){
+        io.off('broadcast message', this.props.saveComment)
+    }
+
 
     sendMessage = (e) =>{
        e.preventDefault()
@@ -49,6 +52,7 @@ class Comment extends React.Component{
     }
 
   render(){
+      console.log(this.props.comment)
       return(
           <div class = "live">
                 <h3 style = {{fontStyle:'italic'}}>Chat with your friends and react to the live!</h3>
@@ -56,7 +60,7 @@ class Comment extends React.Component{
                 <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
                 <button>Send</button>
                 </form>
-                <div id = "output"></div>
+                <div id = "output">{this.props.comment.map(message => <p>{this.props.username}: {message}</p>)}</div>
           </div>
       )
   }
