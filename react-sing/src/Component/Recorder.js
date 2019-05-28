@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.1.196:3000'
+const serverURL = 'http://10.185.3.158:3000'
 
 const mapStateToProps = state =>{
   return  { 

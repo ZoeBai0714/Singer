@@ -31,12 +31,14 @@ app.post ('/login', (req, res) => {
                 jwt.sign({user:user}, 'secretkey', (err, token)=>{
                     res.json({user, token})
                 })         
+           }else if(result == false){
+               res.json({result})
            } 
         })
     })
 })
 
- 
+  
  
 //Routes for data 
 app.get('/users', (req, res) =>{

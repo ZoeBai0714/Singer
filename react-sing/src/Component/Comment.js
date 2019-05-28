@@ -41,7 +41,7 @@ class Comment extends React.Component{
     }
 
     componentWillUnmount(){
-        io.off('broadcast message', this.props.saveComment)
+        io.off('broadcast message'/*, this.props.saveComment*/)
         io.off('new user')
     }
 
@@ -58,12 +58,13 @@ class Comment extends React.Component{
       console.log(this.props.comment)
       return(
           <div class = "live">
-                <h3 style = {{fontStyle:'italic'}}>Chat with your friends and react to the live!</h3>
+                <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div>
+                <p style = {{opacity:'1',fontStyle:'italic', color:'white', fontSize:'20px'}}>Chat with your friends and react to the live!</p>
                 <form onSubmit = {this.sendMessage}>
                 <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
-                <button>Send</button>
+                <button style = {{fontSize:'20px', borderRadius:'5px', opacity:'0.8'}}>Send</button>
                 </form>
-                <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div>
+                {/* <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div> */}
           </div>
       )
   }

@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 import coverpage from '../assets/coverpage.mp4'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.1.196:3000'
+const serverURL = 'http://10.185.3.158:3000'
 
 
 const mapStateToProps = state =>{
@@ -11,7 +11,8 @@ const mapStateToProps = state =>{
               userId: state.userId,
               username: state.username,
               //password: state.password,
-              login: state.login
+              login: state.login,
+              loginFail: state.loginFail
            }
 }
 
@@ -19,7 +20,8 @@ const mapDispatchToProps = {
     getUserId: (id) => ({type: "USERID", userId:id}),
     getUsername: (username) => ({type: 'USERNAME', username:username}),
     //getPassword: (password) => ({type: 'PASSWORD', password:password}),
-    loginStatus: (status) => ({type: 'LOGIN', login:status})
+    loginStatus: (status) => ({type: 'LOGIN', login:status}),
+    loginFailStatus: (status) => ({type: 'LOGINFAIL', loginFail:status})
 }
 
 
@@ -28,7 +30,6 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
    
     login = (e) =>{
         e.preventDefault()
-        console.log(e.target.children[1])
         let username = e.target.children[0].children[1].value
         let password = e.target.children[1].children[1].value
         fetch(`${serverURL}/login`, {
@@ -44,11 +45,22 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
             })
           .then(res => res.json())
           .then(data => {
-                localStorage.setItem('username', data.user.username)
-                localStorage.setItem('userid', data.user.id)
-                localStorage.setItem('token', data.token)
-                this.props.loginStatus(true)
-                console.log(localStorage)
+              if(data.token){
+                    localStorage.setItem('username', data.user.username)
+                    localStorage.setItem('userid', data.user.id)
+                    localStorage.setItem('token', data.token)
+                    this.props.loginStatus(true)
+                    console.log(localStorage)
+                }else{
+                    console.log(data)
+                    this.props.loginFailStatus(true)
+                    console.log(this.props.loginFail)
+                }
+                // localStorage.setItem('username', data.user.username)
+                // localStorage.setItem('userid', data.user.id)
+                // localStorage.setItem('token', data.token)
+                // this.props.loginStatus(true)
+                // console.log(localStorage)
           })
     }
 
@@ -70,6 +82,7 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
 
     
     render(){
+        console.log(this.props.loginFail)
         return(
             <div >
                <div class = 'section'>
@@ -79,6 +92,7 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
                         </video> 
                     </div>
                       <h1 class = "glow">Singer</h1>
+                      {this.props.loginFail == true? <div id = "login-fail">Incorrect login information, please try again</div> : null}
                       <form onSubmit = {this.login}>
                       <div class="input-container">
                         <i class="fa fa-user icon"></i>

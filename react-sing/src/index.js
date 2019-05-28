@@ -18,6 +18,7 @@ const initState = {
     username: "",//
     password:"",//
     login:false,
+    loginFail:false,
     comment: [], 
     mySongs: [],
     record: false,

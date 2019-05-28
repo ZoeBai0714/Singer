@@ -12,7 +12,7 @@ import LiveStreamSocket from './Component/LiveStreamSocket'
 import Nav from './Component/Nav'; 
 import {io} from './Component/IO'
 import background from './assets/background2.jpg'
-const URL = 'http://10.185.1.196:3001'
+const URL = 'http://10.185.3.158:3001'
 //const io = socketIO('localhost:3000/')
 //const io = socketIO('http://10.185.2.248:3000/')
 //window.io = io
@@ -26,7 +26,7 @@ const MainPage = (props) => (
         <SearchBar songList={props.songList} />
         <Recorder  sendAudioBuffer={props.sendAudioBuffer} abort={props.abort} />
         <MySongs/>
-        {props.liveMode == true?  <h3 style = {{textAlign:'center', fontStyle:"italic"}}>You are now in livemode, your room number is {props.roomId}, invite your friends to join your live!</h3> : null}  
+        {props.liveMode == true?  <p style = {{textAlign:'center', fontStyle:"italic", fontSize:'20px', color:'white'}}>You are now in livemode, your room number is {props.roomId}, invite your friends to join your live!</p> : null}  
         {props.liveMode == true?  <SoundEffect /> : null} 
         {props.liveMode == true?  <Comment /* reaction={this.props.reaction} username={this.props.username} comment={this.props.comment}*/ /> : null}
   </div>
@@ -87,7 +87,7 @@ class App extends React.Component {
         function sourceOpen(timestamp = false){ 
           audioElement = document.createElement('audio');
           mediaSource = new MediaSource();
-          audioElement.src = URL.createObjectURL(mediaSource);
+          audioElement.src = window.URL.createObjectURL(mediaSource);
           audioElement.autoplay = true
           mediaSource.addEventListener('sourceopen', e => {
             // console.log('h i')
@@ -128,6 +128,11 @@ class App extends React.Component {
         this.props.loginStatus(false)
         localStorage.clear()
       }
+
+      componentWillUnmount(){
+        io.off('broadcast message', this.props.saveComment)
+        io.off('new user')
+    }
       
   render() {
     console.log(localStorage)
@@ -135,7 +140,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
          <Route exact path = '/singer' render = {() =>this.props.login == true && localStorage.token.length > 0? (<Redirect to = '/my-page'/>): (<Home/>) } />
-         <Route exact path = '/my-page' render = {() => localStorage.token.length > 0?(<MainPage
+         <Route exact path = '/my-page' render = {() => localStorage.token?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
           username={this.props.username} comment={this.props.comment} mySongs = {this.props.mySongs} logout = {this.logout} 
           liveMode = {this.props.liveMode} roomId = {this.props.roomId}/>): (<Home/>)

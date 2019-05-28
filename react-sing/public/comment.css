@@ -3,24 +3,31 @@
     margin-left: 25%;
     border-style: solid;
     border-radius: 5px;
-    /* border-width: 1px; */
-    border-color:transparent;
+    border-color: transparent;
+    border-width: 1px;
+    /* border-color:white; */
     margin-top:1%;
     width: 710px;
-    height: 50vh;
+    height: 40vh;
     text-align: center;
     overflow-y: scroll;
     overflow: hidden;
-    -webkit-transition: border-color linear 1s;
+    -webkit-transition: box-shadow linear 0.8s;
 }
 
 #output:hover{
+    box-shadow: 0 0 10px white, 0 0 20px #fff; 
     border-color: white;
-    border-width: 1px;
+    /* border-width: 1px; */
     overflow: scroll;
     scrollbar-width: thin
 }
 
 h3{
     color: white;
+}
+
+#message{
+    opacity:0.8;
+    border-radius: 5px;
 }

@@ -73,3 +73,12 @@
       left:0;
       width:100%;
   }
+
+  #login-fail{
+    position: absolute;
+    color:white;
+    margin-top: 1.4%;
+    opacity:1;
+    -webkit-transition: opacity 0.3s;
+    transition:opacity 0.3s 
+  }
