@@ -17,4 +17,18 @@ canvas{
     border: solid, pink;
     border-radius: 15px;
 }
+
+.deleteBtn{
+    position: absolute;
+    border-radius: 15px;
+    width:20px;
+    height: 20px;
+    margin-left: 21%;
+    margin-bottom: 50%;
+    -webkit-transition: box-shadow linear 1s;
+}
+
+.deleteBtn:hover{
+    box-shadow: 0 0 10px white, 0 0 20px #fff , 0 0 30px white
+}
   

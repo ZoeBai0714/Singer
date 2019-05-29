@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactMic } from 'react-mic';
 import {connect} from 'react-redux'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.3.158:3000'
+const serverURL = 'http://10.185.7.76:3000'
 
 const mapStateToProps = state =>{
   return  { 
@@ -25,7 +25,7 @@ const mapDispatchToProps = {
     createTimestamp: (timestamp) => ({type: 'TIMESTAMP', startedTimestamp:timestamp}),
     fetchSongs: (userSongs)=> ({type: 'USER_SONGS', mySongs:userSongs})
     //saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
-}
+} 
 
 export default connect(mapStateToProps, mapDispatchToProps)(
  class Recorder extends React.Component {
@@ -76,7 +76,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
      onSave = e =>{
        e.preventDefault();
        const songName = prompt('Please enter your song name:')
-        if(songName.length && this.props.blobString !== ""){
+        if(songName && this.props.blobString !== ""){
            console.log(this.props.blobString)
           // save this into database by fetch post method
             fetch(`${serverURL}/recorded-songs`, {
@@ -94,7 +94,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             
             })
            
-        }else if(songName.length == 0){
+        }else{
            alert('Song name can not be empty!')
         }  
        

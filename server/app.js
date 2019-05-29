@@ -10,7 +10,7 @@ const socketIO = require("socket.io");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.json({limit: '100mb'}))
 app.use(cors());
 server.listen(port, () => console.log(`Listening on port ${port}`));
   
@@ -24,6 +24,8 @@ app.post ('/login', (req, res) => {
     //console.log(req.body)
     User.findOne({where: {username: req.body.username}})
     .then(user => {
+        if(user){
+        console.log(user)
         let hash = user.password_digest
         bcrypt.compare(req.body.password, hash, (err, result)=>{
            if (result == true){
@@ -35,6 +37,7 @@ app.post ('/login', (req, res) => {
                res.json({result})
            } 
         })
+      }
     })
 })
 

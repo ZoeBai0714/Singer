@@ -94,7 +94,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(class SoundEffect ex
 
     render(){
         return(
-            <div id = "sound-effect" class = "live">
+            <div style = {{position:'absolue',marginLeft:'40%'}} id = "sound-effect" class = "live">
                <span><button class = "sound-effect applause" onClick = {this.applause}>Applause</button></span>
                <span><button class = "sound-effect boo" onClick = {this.boo}>Boo</button></span>
                <span><button class = "sound-effect whistle" onClick = {this.whistle}>Whistle</button></span>

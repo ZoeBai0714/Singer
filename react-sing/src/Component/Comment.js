@@ -51,18 +51,22 @@ class Comment extends React.Component{
        const name = localStorage.username
        const message = e.target.children[0].value
        const roomId = this.props.roomId
-            io.emit('new message', {roomId: roomId, message: message, user:name})
+       io.emit('new message', {roomId: roomId, message: message, user:name})
+    }
+
+    clearInput = (e) =>{
+        e.target.value = ""
     }
 
   render(){
       console.log(this.props.comment)
       return(
-          <div class = "live">
+          <div style = {{marginTop:'6%'}} class = "live">
                 <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div>
-                <p style = {{opacity:'1',fontStyle:'italic', color:'white', fontSize:'20px'}}>Chat with your friends and react to the live!</p>
+                <p style = {{width:'450px',position:'absolue',marginLeft:'48%', opacity:'1',fontStyle:'italic', color:'white', fontSize:'20px'}}>Chat with your friends and react to the live!</p>
                 <form onSubmit = {this.sendMessage}>
-                <input id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
-                <button style = {{fontSize:'20px', borderRadius:'5px', opacity:'0.8'}}>Send</button>
+                <input onFocus = {this.clearInput} id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
+                <button style = {{position:'absolute',marginLeft:'33%',fontSize:'20px', borderRadius:'5px', opacity:'0.8'}}>Send</button>
                 </form>
                 {/* <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div> */}
           </div>

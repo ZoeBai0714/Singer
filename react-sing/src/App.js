@@ -12,7 +12,8 @@ import LiveStreamSocket from './Component/LiveStreamSocket'
 import Nav from './Component/Nav'; 
 import {io} from './Component/IO'
 import background from './assets/background2.jpg'
-const URL = 'http://10.185.3.158:3001'
+import { throws } from 'assert';
+const URL = 'http://10.185.7.76:3001'
 //const io = socketIO('localhost:3000/')
 //const io = socketIO('http://10.185.2.248:3000/')
 //window.io = io
@@ -42,7 +43,8 @@ const mapStateToProps = state =>{
     roomId: state.roomId,
     liveMode:state.liveMode,
     usersInTheRoom: state.usersInTheRoom,
-    startedTimestamp:state.startedTimestamp
+    startedTimestamp:state.startedTimestamp,
+    loginFail: state.loginFail
          }
 }
 
@@ -50,7 +52,10 @@ const mapDispatchToProps = {
   getSongIds: (songIds) => ({type: 'SONGIDS', songIds: songIds}),
   getUsername: (username) => ({type: 'USERNAME', username:username}),
   userComment: (comment) => ({type: 'COMMENT', comment:comment}),
-  loginStatus: (status) => ({type: 'LOGIN', login:status})
+  loginStatus: (status) => ({type: 'LOGIN', login:status}),
+  changeLiveMode: (mode) => ({type: 'LIVEMODE', liveMode: mode}),
+  changeRecordStatus: (status) => ({type: 'CHANGE_RECORD_STATUS', record:status}),
+  loginFailStatus: (status) => ({type: 'LOGINFAIL', loginFail:status})
 }
 
 export default connect (mapStateToProps, mapDispatchToProps )(
@@ -63,11 +68,19 @@ class App extends React.Component {
 
   componentDidMount() {
     var sourceBuffer, audioElement, mediaSource
+          mediaSource = new MediaSource();
+          audioElement = document.createElement('audio');
+          audioElement.src = window.URL.createObjectURL(mediaSource);
    
       console.log(io)
       const queue = []
 
         io.on('new audioBuffer', (data) => {
+          //////////new///////////
+          mediaSource = new MediaSource();
+          audioElement = document.createElement('audio');
+          audioElement.src = window.URL.createObjectURL(mediaSource);
+ 
           console.log('I am singing live')
           console.log(data)
           queue.push(data.arrayBuffer)
@@ -86,23 +99,26 @@ class App extends React.Component {
 
 
         function sourceOpen(timestamp = false){ 
-          audioElement = document.createElement('audio');
-          mediaSource = new MediaSource();
-          audioElement.src = window.URL.createObjectURL(mediaSource);
-          audioElement.autoplay = true
-          mediaSource.addEventListener('sourceopen', e => {
-            // console.log('h i')
-            var mime = "audio/webm;codecs=opus";
-            var mediaSource = e.target;
-            sourceBuffer = mediaSource.addSourceBuffer(mime);
-            if(timestamp) sourceBuffer.timestampOffset = timestamp
-            sourceBuffer.addEventListener('updateend', feedBuffer)
-            mediaSource.addEventListener('sourceended', e => {
-              console.log('here@')
-              sourceBuffer = null
-            }) // mad josh       
-            feedBuffer()          
-          });
+          let mediaSource = new MediaSource();
+          console.log(mediaSource.readyState)
+              audioElement = document.createElement('audio');
+              audioElement.src = window.URL.createObjectURL(mediaSource);
+              audioElement.autoplay = true
+              mediaSource.addEventListener('sourceopen', e => {
+                // console.log('h i')
+                var mime = "audio/webm;codecs=opus";
+                var mediaSource = e.target;
+                    sourceBuffer = mediaSource.addSourceBuffer(mime);
+                    if(timestamp) sourceBuffer.timestampOffset = timestamp
+                    sourceBuffer.addEventListener('updateend', feedBuffer)
+                    mediaSource.addEventListener('sourceended', e => {
+                      console.log('here@')
+                      sourceBuffer = null
+                    }) // mad josh       
+                    feedBuffer()
+                        
+              });
+          
         }
       }
 
@@ -128,6 +144,7 @@ class App extends React.Component {
         console.log('you reached me')
         this.props.loginStatus(false)
         localStorage.clear()
+        this.props.loginFailStatus(false)
       }
 
       componentWillUnmount(){
@@ -141,7 +158,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
          <Route exact path = '/singer' render = {() =>this.props.login == true && localStorage.token.length > 0? (<Redirect to = '/my-page'/>): (<Home/>) } />
-         <Route exact path = '/my-page' render = {() => localStorage.token?(<MainPage
+         <Route exact path = '/my-page' render = {() => localStorage.token.length?(<MainPage
           songList={this.songList} songIds = {this.props.songIds} sendAudioBuffer={this.sendAudioBuffer} abort={this.abort} 
           username={this.props.username} comment={this.props.comment} mySongs = {this.props.mySongs} logout = {this.logout} 
           liveMode = {this.props.liveMode} roomId = {this.props.roomId}/>): (<Home/>)

@@ -1,7 +1,9 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import deleteBtn from '../assets/delete.png';
+
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.3.158:3000'
+const serverURL = 'http://10.185.7.76:3000'
 
 const mapStateToProps = state =>{
      return { 
@@ -57,11 +59,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                    <ul id = "song-list">
                        <h1>My Songs</h1>
                         {this.props.mySongs.map(song => 
-                        <li id = {song.id} style = {{marginRight:'1%'}}>{song.name}
-                            <audio controls>
+                        <li id = {song.id} style = {{marginRight:'1%', fontFamily:'Arial'}}>{song.name}
+                            <audio controls >
                                 <source src = {`data:audio/webm;codecs=opus;base64,${song.blobURL}`}/>
                             </audio>
-                            <button onClick = {this.deleteSong}>Delete</button>
+                            <img class = "deleteBtn" src = {deleteBtn} onClick = {this.deleteSong}/>
                         </li>)}
                   </ul>
                </div>

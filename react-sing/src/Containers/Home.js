@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import socketIO from 'socket.io-client';
 import coverpage from '../assets/coverpage.mp4'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.3.158:3000'
+const serverURL = 'http://10.185.7.76:3000'
 
 
 const mapStateToProps = state =>{
@@ -29,6 +29,7 @@ const mapDispatchToProps = {
 export default connect (mapStateToProps, mapDispatchToProps) (class Home extends React.Component {
    
     login = (e) =>{
+        console.log(localStorage)
         e.preventDefault()
         let username = e.target.children[0].children[1].value
         let password = e.target.children[1].children[1].value
@@ -78,7 +79,6 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
 
     
     render(){
-        console.log(this.props.loginFail)
         return(
             <div >
                <div class = 'section'>

@@ -10,7 +10,8 @@
   } 
 
   .section h1{
-      text-align: center;
+      margin-left: 1.5%;
+      /* text-align: center; */
       position:absolute;
       z-index:1 ;
       top:0;

@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {io} from './IO'
 //const serverURL = 'http://localhost:3000'
-const serverURL = 'http://10.185.3.158:3000'
+const serverURL = 'http://10.185.7.76:3000'
 
 const mapStateToProps = state =>{
      return { 
@@ -26,7 +26,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
         fetchUserId = () => {
             if(this.props.liveMode == true){
-              alert(`You are now leaving live room ${this.props.roomId}`)  
+              alert(`You are now leaving live room ${this.props.roomId}`) 
+              window.location.reload()
               this.props.changeLiveMode(false)
               this.props.clearComment()
             }
@@ -77,6 +78,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
 
                     //5. Save roomId
                     this.props.saveRoomId(roomId)
+
+                    
                 }
           }else if(btnValue == "Stop Live"){
             alert(`You are leaving live room ${this.props.roomId}`)
