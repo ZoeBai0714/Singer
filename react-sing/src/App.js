@@ -20,7 +20,7 @@ const URL = 'http://10.185.7.76:3001'
 const MainPage = (props) => (
   <div>
      <img id="background" src = {background}/>
-     <span style = {{textDecoration: 'none',position:'absolute',display:'flex',fontSize:'25px', fontFamily: 'Arial ',fontStyle: 'bold', color:'white', fontStyle:'italic', opacity:'0.8'}}>Welcome {localStorage.username}</span>
+     <span style = {{textDecoration: 'none',position:'absolute',display:'flex',fontSize:'25px', fontFamily: 'Arial ',fontStyle: 'bold', color:'white', opacity:'0.8'}}>Welcome {localStorage.username}</span>
      <Link to= '/singer' style = {{fontColor:'white',fontSize:'25px',textDecoration: 'none', marginLeft:'90%', marginTop:'5%'}} onClick = {props.logout}>Logout</Link>
         <Nav />
         <LiveStreamSocket/>
@@ -72,7 +72,6 @@ class App extends React.Component {
           audioElement = document.createElement('audio');
           audioElement.src = window.URL.createObjectURL(mediaSource);
    
-      console.log(io)
       const queue = []
 
         io.on('new audioBuffer', (data) => {
@@ -129,7 +128,6 @@ class App extends React.Component {
       sendAudioBuffer = bufferData => {
         console.log('I am here')
         console.log(this.props.roomId)
-        console.log(MediaSource.readyState)
         //create timestamp for started
 
         //create timestamp for now
@@ -141,7 +139,6 @@ class App extends React.Component {
       }
       
       logout = () =>{
-        console.log('you reached me')
         this.props.loginStatus(false)
         localStorage.clear()
         this.props.loginFailStatus(false)

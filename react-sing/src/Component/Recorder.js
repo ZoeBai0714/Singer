@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactMic } from 'react-mic';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import {io} from './IO'
 //const serverURL = 'http://localhost:3000'
 const serverURL = 'http://10.185.7.76:3000'
 
@@ -34,17 +35,21 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         this.props.changeRecordStatus(true)
         const date = new Date()
         const startedTimestamp = (date.getTime() %6000/1000 )//.toFixed(0)
-        this.props.createTimestamp(startedTimestamp)     
+        this.props.createTimestamp(startedTimestamp) 
+        console.log(this.props.roomId)
+        // Do not allow other user to join the live room once started
+        io.emit('close room', {roomId:localStorage.liveRoom})
+
       }
     
       stopRecording = () => {
         this.props.changeRecordStatus(false)
+        io.emit('open room', {roomId:localStorage.liveRoom})
       }
     
       onData = (recordedBlob)=> {
        
         console.log('chunk of real-time data is:: ', recordedBlob.blobURL);
-        console.log(this.props.liveMode)
             if(this.props.liveMode == true){
             this.props.sendAudioBuffer(recordedBlob)
              }        

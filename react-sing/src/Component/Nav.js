@@ -23,13 +23,29 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(
 
    class MySongs extends React.Component {
+        componentDidMount(){
+           io.on('join rejected', (message)=>{
+               alert(message.err)
+               this.props.changeLiveMode(false)
+               window.location.reload()
+           })
 
-        fetchUserId = () => {
+           if(this.props.liveMode == false){
+            io.on('open room', {roomId:this.props.roomId})
+           }
+        }
+
+        fetchUserId = (e) => {
             if(this.props.liveMode == true){
-              alert(`You are now leaving live room ${this.props.roomId}`) 
-              window.location.reload()
-              this.props.changeLiveMode(false)
-              this.props.clearComment()
+              const choice = window.confirm(`You are now leaving live room ${this.props.roomId}, Y/N?`)
+              console.log(choice)
+                if(choice == true){
+                    window.location.reload()
+                    this.props.changeLiveMode(false)
+                    this.props.clearComment()
+                }else{
+                   return null
+                }
             }
             const mySongs = document.getElementById('song-list')
 
@@ -65,11 +81,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 }else if(roomId !== null){
                     //1. Change liveMode to render live components
                     this.props.changeLiveMode(true)
-
+                    localStorage.setItem('liveRoom', roomId)
                     //2. Join room
                     io.connect()
-                    io.emit('room', {roomId: roomId, user:localStorage.username})
-
+                    io.emit('room', {roomId: roomId, user:localStorage.username/*, socketId:io.id*/})
+                    console.log(io.id)
                     //3. Close mySongs
                     const mySongs = document.getElementById('song-list')
                     mySongs.className = ''
@@ -83,17 +99,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                     
                 }
           }else if(btnValue == "Stop Live"){
-            alert(`You are leaving live room ${this.props.roomId}`)
-            this.props.changeLiveMode(false)
-            this.props.saveRoomId("")
-            this.props.clearComment()
-            roomId = null
-            io.disconnect()
-            io = null
-            console.log(localStorage.username + ' left the room')
+            const choice = window.confirm(`You are now leaving live room ${this.props.roomId}`)
+                if(choice == true){
+                    // alert(`You are leaving live room ${this.props.roomId}`)
+                    this.props.changeLiveMode(false)
+                    // io.on('open room', {roomId:localStorage.liveRoom})
+                    this.props.saveRoomId("")
+                    this.props.clearComment()
+                    roomId = null
+                    io.disconnect()
+                    io = null
+                    console.log(localStorage.username + ' left the room')
+                }else{
+                    return null
+                }
+                
          }            
             
-
+        console.log(localStorage)
           
         }
         

@@ -129,25 +129,33 @@ app.get('/recorded-songs/:id', (req, res)=>{
 //setup socket
 
 const rooms = {}
+let closedRooms = {}
 const io = socketIO(server)
 io.on('connection', socket =>{
     console.log('socket working hi')
     /////////////////////////////Live Chat////////////////////////
     socket.on('room', data => {
-       console.log(data)
-       // if a room exist, put them in, if not create one and push the first user in
-            if(rooms[data.roomId] == undefined){
-                rooms[data.roomId] = {
-                    id:data.roomId,
-                    users:[data.user]
-                }
-            }else if(!rooms[data.roomId].users.includes(data.user)){
-               rooms[data.roomId].users.push(data.user)
-               console.log( rooms[data.roomId].users)
-            }
-       console.log(rooms)
-       socket.join(data.roomId)
-       io.sockets.in(data.roomId).emit('new user',`${data.user}`)
+        if(closedRooms[data.roomId]){
+            console.log("Room was closed, failed to join")
+            console.log(socket.id)
+            console.log(data.socketId)
+           io.to(socket.id).emit('join rejected', {err: `${data.roomId} is closed, plase join the live on time next time!`})
+        } else {
+            console.log("room successfully joined")
+            console.log(data)
+            // if a room exist, put them in, if not create one and push the first user in
+                    if(rooms[data.roomId] == undefined){
+                        rooms[data.roomId] = {
+                            id:data.roomId,
+                            users:[data.user]
+                        }
+                    }else if(!rooms[data.roomId].users.includes(data.user)){
+                    rooms[data.roomId].users.push(data.user)
+                    console.log( rooms[data.roomId].users)
+                    }
+            socket.join(data.roomId)
+            io.sockets.in(data.roomId).emit('new user',`${data.user}`)
+        }
     })
     //// receive new message
     socket.on('new message', message => {
@@ -157,13 +165,25 @@ io.on('connection', socket =>{
 
    //////////////////////// Live Singing //////////////////////
     socket.on('audioBuffer', audioBuffer => {
-        console.log(audioBuffer)
+        // console.log(audioBuffer)
         io.sockets.in(audioBuffer.roomId).emit('new audioBuffer', audioBuffer.bufferData)
        //socket.broadcast.emit('audioBuffer', audioBuffer)
        //io.sockets
     })
    socket.on('abort',()=>{
        socket.broadcast.emit('abort')
+   })
+
+   socket.on('close room', roomId => {
+      closedRooms[roomId.roomId] = true
+      console.log("Closing room. All closed rooms:")
+      console.log(closedRooms) 
+   })
+
+   socket.on('open room', roomId => {
+       delete closedRooms[roomId.roomId]
+       console.log(closedRooms)
+       console.log('opennnnnnnnnn')
    })
 
  /////////////////////////////Sound Effect////////////////////////
