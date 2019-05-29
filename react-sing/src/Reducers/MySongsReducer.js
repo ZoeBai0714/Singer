@@ -61,6 +61,10 @@ const MySongsReducer = (state, action) => {
             return {...state, comment: state.comment.concat(action.comment)}
         break;
 
+        case 'TEXTCOLOR':            
+            return {...state, textColor: action.textColor}
+        break;
+
         case 'CLEARCOMMENT':            
             return {...state, comment: []}
         break;

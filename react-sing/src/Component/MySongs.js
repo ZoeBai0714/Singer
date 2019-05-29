@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import deleteBtn from '../assets/delete.png';
+import editBtn from '../assets/edit.png';
 
 //const serverURL = 'http://localhost:3000'
 const serverURL = 'http://10.185.7.76:3000'
@@ -40,7 +41,30 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                }) 
         
        }
+     
+       editSong = (e) =>{
+           const songName = prompt('Please enter your new song name')
+           const songId = e.target.parentElement.id   
+           if(songName){
+                fetch(`${serverURL}/recorded-songs`, {
+                    method: 'PATCH',
+                    headers:{
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: songName,
+                        id: songId
+                    })
+                })
+           }
 
+           fetch(`${serverURL}/users/${localStorage.userid}/recorded-songs`) 
+           .then(res => res.json())
+           .then(userSongs =>{ 
+                   this.props.fetchSongs(userSongs)
+               }) 
+       }
     /// infinite loop   
     //    componentDidUpdate(prevProps, prevState){
     //       if(this.props.mySongs !== prevProps.mySongs){
@@ -64,6 +88,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                                 <source src = {`data:audio/webm;codecs=opus;base64,${song.blobURL}`}/>
                             </audio>
                             <img class = "deleteBtn" src = {deleteBtn} onClick = {this.deleteSong}/>
+                            <img class = "editBtn" src = {editBtn} onClick = {this.editSong}/>
                         </li>)}
                   </ul>
                </div>

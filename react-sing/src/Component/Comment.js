@@ -10,7 +10,8 @@ const mapStateToProps = state =>{
         username: state.username,
         roomId: state.roomId,
         liveMode: state.liveMode,
-        comment: state.comment
+        comment: state.comment,
+        textColor:state.textColor
     }
 }
 
@@ -46,12 +47,13 @@ class Comment extends React.Component{
     }
 
 
+
     sendMessage = (e) =>{
        e.preventDefault()
        const name = localStorage.username
        const message = e.target.children[0].value
        const roomId = this.props.roomId
-       io.emit('new message', {roomId: roomId, message: message, user:name})
+       io.emit('new message', {roomId: roomId, message: message, user:name, textColor:this.props.textColor})
     }
 
     clearInput = (e) =>{
@@ -59,10 +61,9 @@ class Comment extends React.Component{
     }
 
   render(){
-      console.log(this.props.comment)
       return(
           <div style = {{marginTop:'6%'}} class = "live">
-                <div id = "output">{this.props.comment.map(message => <p>{message.user}: {message.message}</p>)}</div>
+                <div id = "output">{this.props.comment.map(message => <p style = {{color: message.textColor, fontWeight:'bold', fontSize:'20px'}}>{message.user}: {message.message}</p>)}</div>
                 <p style = {{width:'450px',position:'absolue',marginLeft:'48%', opacity:'1',fontStyle:'italic', color:'white', fontSize:'20px'}}>Chat with your friends and react to the live!</p>
                 <form onSubmit = {this.sendMessage}>
                 <input onFocus = {this.clearInput} id = "message" type = "text" placeholder = "Message" onKeyDown = {this.props.feedback}></input>
@@ -76,3 +77,4 @@ class Comment extends React.Component{
 )
 
 //{this.props.comment.length > 0 ? this.props.displayComments() : null}
+ 

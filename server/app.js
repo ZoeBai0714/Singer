@@ -78,9 +78,22 @@ app.get('/users/:id/recorded-songs', (req, res) =>{
 })
 
 app.get('/recorded-songs', (req, res) =>{
-    console.log("watup")
     RecordedSong.findAll({ include:[{model: User}]})
     .then(songs => res.json(songs))
+})
+
+app.patch('/recorded-songs', (req, res) =>{
+    console.log('You reached me !!!!!!!!!!!!!!!')
+    console.log(req.body)
+    // RecordedSong.findOne({where: {id: req.body.id}})
+    // .then(song => res.json(song))
+    // .then(song =>{
+        RecordedSong.update(
+            {name:req.body.name},
+            {where:{id:req.body.id}}
+        )
+        .then(song => res.json(song))
+    //})
 })
  
 app.delete('/recorded-songs', (req, res)=>{
@@ -139,7 +152,7 @@ io.on('connection', socket =>{
     //// receive new message
     socket.on('new message', message => {
         console.log(message)
-        io.sockets.in(message.roomId).emit('broadcast message', {message:message.message, user:message.user})
+        io.sockets.in(message.roomId).emit('broadcast message', {message:message.message, user:message.user, textColor:message.textColor})
     })
 
    //////////////////////// Live Singing //////////////////////

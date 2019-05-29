@@ -12,16 +12,20 @@ const mapStateToProps = state =>{
               username: state.username,
               //password: state.password,
               login: state.login,
-              loginFail: state.loginFail
+              loginFail: state.loginFail,
+              textColor:state.textColor,
+              liveMode: state.liveMode
            }
 }
 
 const mapDispatchToProps = {
     getUserId: (id) => ({type: "USERID", userId:id}),
     getUsername: (username) => ({type: 'USERNAME', username:username}),
-    //getPassword: (password) => ({type: 'PASSWORD', password:password}),
+    changeLiveMode: (mode) => ({type: 'LIVEMODE', liveMode: mode}),
     loginStatus: (status) => ({type: 'LOGIN', login:status}),
-    loginFailStatus: (status) => ({type: 'LOGINFAIL', loginFail:status})
+    loginFailStatus: (status) => ({type: 'LOGINFAIL', loginFail:status}),
+    assignTextColor: (color) => ({type: 'TEXTCOLOR',textColor:color}),
+    clearComment: ()=>({type:'CLEARCOMMENT', comment:[]})
 }
 
 
@@ -50,7 +54,10 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
                     localStorage.setItem('username', data.user.username)
                     localStorage.setItem('userid', data.user.id)
                     localStorage.setItem('token', data.token)
+                    this.messageColor()
                     this.props.loginStatus(true)
+                    this.props.changeLiveMode(false)
+                    this.props.clearComment()
                     console.log(localStorage)
                 }else{
                     console.log(data)
@@ -77,8 +84,18 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
         })
     }
 
+    messageColor = () =>{
+        console.log('you reached me')
+        const getRamdonInt = (min, max) =>{
+           return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+        const color = `rgb(${getRamdonInt(100,200)}, ${getRamdonInt(100,200)}, ${getRamdonInt(100,200)})`
+        this.props.assignTextColor(color)
+    }
+
     
     render(){
+        console.log(this.props.textColor)
         return(
             <div >
                <div class = 'section'>

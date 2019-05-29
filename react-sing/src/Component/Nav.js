@@ -32,6 +32,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               this.props.clearComment()
             }
             const mySongs = document.getElementById('song-list')
+
             //1.scroll up/down the window
             if(mySongs.classList == ""){
                 window.scrollBy(0, 150)
@@ -39,8 +40,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 window.scrollBy(0,-150)
             }
 
-            // //2.add classList to toggle and close liveMode
-            // this.props.changeLiveMode(false)
+            //2.add classList to toggle and close liveMode
+            this.props.changeLiveMode(false)
             mySongs.classList.toggle('active')
 
 
