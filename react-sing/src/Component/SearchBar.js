@@ -25,11 +25,18 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
         fetch(URL)
         .then((res) => res.json())
         .then(songData => {
-            console.log('you reached me')
             let songIds = songData.items.map(song => song.id.videoId)
             songIds = songIds.filter(id => id !== undefined)
             if(songIds.length == 0){
-               this.noSongs()
+                const noSongs = document.querySelector('.no-songs')
+                console.log(noSongs)
+                if(noSongs == null){
+                    this.noSongs(query)
+                }else{
+                    noSongs.remove()
+                    this.noSongs(query)
+                }
+            //    this.noSongs()
             }else if(songIds.length > 0){
                 const noSongs = document.querySelector('.no-songs')
                 if(noSongs){
@@ -42,12 +49,13 @@ export default connect (mapStateToProps, mapDispatchToProps)(class Main extends 
         }) 
     }
 
-    noSongs = () =>{
-         const h3 = document.createElement('h3')
-         h3.className = "no-songs"
-         const searchBar = document.getElementsByTagName('form')
-         h3.innerHTML = "Sorry, we don't have this song yet"
-         searchBar[0].appendChild(h3)
+    noSongs = (query) =>{
+            const h3 = document.createElement('h3')
+            h3.className = "no-songs"
+            const searchBar = document.getElementsByTagName('form')
+            h3.innerHTML = `Sorry, we don't have ${query} yet`
+            searchBar[0].appendChild(h3)
+         
     }
  
     // logout = () => {
