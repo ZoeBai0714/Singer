@@ -46,13 +46,13 @@
 
 /* Song Lists inactive */
 #song-list{
-  margin-left: 35%;
+  margin-left: 37%;
   display: none
 }
 
 /* Song Lists active */
 #song-list.active{
-  margin-left: 35%;
+  margin-left: 37%;
   display: block;
 }
 
@@ -74,7 +74,8 @@ audio{
 h1{
   font-style: italic;
   font-family: cursive;
-  text-align: left;
+  margin-left: 5%;
+  /* text-align: center; */
   position: relative;
   
 }

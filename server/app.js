@@ -80,10 +80,20 @@ app.get('/recorded-songs', (req, res) =>{
     .then(songs => res.json(songs))
 })
  
+app.delete('/recorded-songs', (req, res)=>{
+    console.log(req.body.songId)
+    RecordedSong.destroy({
+        where:{
+            id:req.body.songId
+        }
+    })
+})
 
 app.post('/recorded-songs', urlencodedParser, async (req, res) => {
     //console.log(req.body)
     //get info from frontend fetch and create the recordedsong and association in db
+    console.log('hiiiiiiiiiiiiiiiiiiiiii')
+    console.log(req.body)
     let user = await User.findByPk(1)
     let song = await RecordedSong.create({name: req.body.name, likes: req.body.likes, blobURL:req.body.blobURL })
     song.setUser(user.id)

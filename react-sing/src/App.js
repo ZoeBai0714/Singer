@@ -63,7 +63,8 @@ class App extends React.Component {
 
   componentDidMount() {
     var sourceBuffer, audioElement, mediaSource
-    console.log(io)
+   
+      console.log(io)
       const queue = []
 
         io.on('new audioBuffer', (data) => {

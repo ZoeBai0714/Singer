@@ -56,11 +56,7 @@ export default connect (mapStateToProps, mapDispatchToProps) (class Home extends
                     this.props.loginFailStatus(true)
                     console.log(this.props.loginFail)
                 }
-                // localStorage.setItem('username', data.user.username)
-                // localStorage.setItem('userid', data.user.id)
-                // localStorage.setItem('token', data.token)
-                // this.props.loginStatus(true)
-                // console.log(localStorage)
+                
           })
     }
 

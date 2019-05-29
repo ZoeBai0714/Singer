@@ -11,7 +11,8 @@ const mapStateToProps = state =>{
            blobString: state.blobString,
            roomId: state.roomId,
            liveMode: state.liveMode,
-           startedTimestamp:""
+           startedTimestamp:"",
+           mySongs: state.mySongs
            //blobObj: state.blobObj
           }
 }
@@ -21,15 +22,14 @@ const mapDispatchToProps = {
     saveBlobURL: (blobURL) =>({type: 'BLOBURL', blobURL:blobURL}),
     saveBlobString: (blobString)=> ({type: 'BLOBSTRING', blob:blobString}),
     saveRoomId: (roomId) => ({type: 'ROOMID', roomId:roomId}),
-    createTimestamp: (timestamp) => ({type: 'TIMESTAMP', startedTimestamp:timestamp})
+    createTimestamp: (timestamp) => ({type: 'TIMESTAMP', startedTimestamp:timestamp}),
+    fetchSongs: (userSongs)=> ({type: 'USER_SONGS', mySongs:userSongs})
     //saveBlobObj: (blobObj) => ({type: 'BLOBOBJ', blobObj:blobObj}) 
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
  class Recorder extends React.Component {
-     componentDidMount(){
-       const canvas = document.getElementsByTagName('canvas')[0]
-     }
+    
       startRecording = () => {
         this.props.changeRecordStatus(true)
         const date = new Date()
@@ -76,7 +76,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(
      onSave = e =>{
        e.preventDefault();
        const songName = prompt('Please enter your song name:')
-        if(songName !== "" && this.props.blobString !== ""){
+        if(songName.length && this.props.blobString !== ""){
+           console.log(this.props.blobString)
           // save this into database by fetch post method
             fetch(`${serverURL}/recorded-songs`, {
               method: "POST",
@@ -92,10 +93,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               })
             
             })
-        }else if(songName == ""){
+           
+        }else if(songName.length == 0){
            alert('Song name can not be empty!')
         }  
-
+       
         console.log(songName)
      }
     
@@ -106,16 +108,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             <button id = "round"  onClick={this.stopRecording} type="button">Stop</button><br/>
             <ReactMic style ={{position:'absolute'}} record={this.props.record} className="sound-wave" onStop={this.onStop} onData={this.onData}
               strokeColor="#000000" backgroundColor="white" nonstop={true} duration={5}/>
-              {/* <button id = "round" style ={{position:'fixed'}} onClick={this.stopRecording} type="button">Stop</button><br/> */}
               <form id = "save-form" onSubmit = {this.onSave} action ="/recorded-songs" method = "POST" >
-                {/* <label>Save your song</label><br/> */}
-                {/* <label for = "song-name">Song name:</label> */}
-                {/* <input type = "text" name = "song-name" /><br/>            */}
+               
                 <input id = 'save-btn' type = "submit" value = "save"/>
               </form>
               <article class="clip">
               <audio style = {{display:'flex',width:'700px',opacity: '0.5'}} ref = "audioSource" controls = "controls" src = {this.props.blobURL} ></audio>
-              {/* <button>Delete</button> */}
               </article>
               
             </div>
